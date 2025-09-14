@@ -20,7 +20,8 @@ char* trim(char* str) {
 }
 
 int extract_array(config_line_t* config_line, char* data) {
-  char* element = strtok(data, ",");
+  char* saveptr;
+  char* element = strtok_r(data, ",", &saveptr);
   while (element != NULL) {
     element = trim(element);
     if (*element == '\0') {
@@ -31,7 +32,7 @@ int extract_array(config_line_t* config_line, char* data) {
       LOG_ERROR("Failed to push element to array.");
       return EXIT_FAILURE;
     }
-    element = strtok(NULL, ",");
+    element = strtok_r(NULL, ",", &saveptr);
   }
   return EXIT_SUCCESS;
 }
@@ -49,7 +50,8 @@ int parse_line(config_line_vec_t* config_line_vec, char* line) {
   }
 
   bool  scope_extracted = false;
-  char* data            = strtok(line, ":");
+  char* saveptr;
+  char* data = strtok_r(line, ";", &saveptr);
 
   while (data != NULL) {
     data = trim(data);
@@ -69,7 +71,7 @@ int parse_line(config_line_vec_t* config_line_vec, char* line) {
         return EXIT_FAILURE;
       }
       scope_extracted = true;
-      data            = strtok(NULL, ":");
+      data            = strtok_r(NULL, ";", &saveptr);
       continue;
     }
 
@@ -80,12 +82,12 @@ int parse_line(config_line_vec_t* config_line_vec, char* line) {
         str_vec_free(&config_line.array);
         return EXIT_FAILURE;
       }
-      data = strtok(NULL, ":");
+      data = strtok_r(NULL, ";", &saveptr);
       continue;
     }
 
     str_vec_push(config_line.fields, data);
-    data = strtok(NULL, ":");
+    data = strtok_r(NULL, ";", &saveptr);
   }
 
   if (config_line_vec_push(config_line_vec, config_line) != 0) {
@@ -130,11 +132,12 @@ int parse_file(const char* filename, config_line_vec_t** config_line_vec) {
     return EXIT_FAILURE;
   }
 
-  char* token = strtok(buffer, "\n");
+  char* saveptr;
+  char* token = strtok_r(buffer, "\n", &saveptr);
 
   while (token != NULL) {
     if (*token == '\0') {
-      token = strtok(NULL, "\n");
+      token = strtok_r(NULL, "\n", &saveptr);
       continue;
     }
 
@@ -154,7 +157,7 @@ int parse_file(const char* filename, config_line_vec_t** config_line_vec) {
       return EXIT_FAILURE;
     }
 
-    token = strtok(NULL, "\n");
+    token = strtok_r(NULL, "\n", &saveptr);
   }
 
   free(buffer);
