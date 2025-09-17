@@ -1,0 +1,7 @@
+CompileFlags:
+  Add:
+    - -Iinclude
+    - -Iexternal/c-vector
+    - -DDEBUG
+    - -std=gnu17
+    - -ferror-limit=0
