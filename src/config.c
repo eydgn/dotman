@@ -2,6 +2,7 @@
 
 #include <ctype.h>
 #include <stdbool.h>
+#include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -175,5 +176,41 @@ int sort_by_enums(config_line_vec_t* config_line_vec) {
       }
     }
   }
+  return EXIT_SUCCESS;
+}
+
+int sort_by_fields(config_line_vec_t* config_line_vec) {
+  size_t split = 0;
+
+  for (; split < config_line_vec->len; split++) {
+    if (config_line_vec[split].data->scope == 2) {
+      break;
+    }
+  }
+
+  for (size_t i = 0; i < split - 1; i++) {
+    for (size_t j = i; j < split - 1; j++) {
+      if (strcmp(config_line_vec[j].data->fields->str[0],
+                 config_line_vec[j + 1].data->fields->str[0])
+          > 0) {
+        config_line_vec_t tmp  = config_line_vec[j];
+        config_line_vec[j]     = config_line_vec[j + 1];
+        config_line_vec[j + 1] = tmp;
+      }
+    }
+  }
+
+  for (size_t i = split + 1; i < config_line_vec->len - 2; i++) {
+    for (size_t j = i; j < config_line_vec->len - 2; j++) {
+      if (strcmp(config_line_vec[j].data->fields->str[0],
+                 config_line_vec[j + 1].data->fields->str[0])
+          > 0) {
+        config_line_vec_t tmp  = config_line_vec[j];
+        config_line_vec[j]     = config_line_vec[j + 1];
+        config_line_vec[j + 1] = tmp;
+      }
+    }
+  }
+
   return EXIT_SUCCESS;
 }
