@@ -167,8 +167,8 @@ int parse_file(const char* filename, config_line_vec_t** config_line_vec) {
 }
 
 int sort_by_enums(config_line_vec_t* config_line_vec) {
-  for (size_t i = 0; i < config_line_vec->len; i++) {
-    for (size_t j = i; j < config_line_vec->len - 1; j++) {
+  for (size_t i = 0; i < config_line_vec->len - 2; i++) {
+    for (size_t j = i; j < config_line_vec->len - 2; j++) {
       if (config_line_vec[j].data->scope > config_line_vec[j + 1].data->scope) {
         config_line_vec_t tmp  = config_line_vec[j];
         config_line_vec[j]     = config_line_vec[j + 1];
