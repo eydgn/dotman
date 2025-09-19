@@ -214,3 +214,45 @@ int sort_by_fields(config_line_vec_t* config_line_vec) {
 
   return EXIT_SUCCESS;
 }
+
+int write_config(config_line_vec_t* config_line_vec, const char* filename) {
+  if (sort_by_enums(config_line_vec)) {
+    LOG_ERROR("sort_by_enums failed!");
+    return EXIT_FAILURE;
+  }
+
+  if (sort_by_fields(config_line_vec)) {
+    LOG_ERROR("sort_by_fields failed!");
+    return EXIT_FAILURE;
+  }
+
+  FILE* file_p = fopen(filename, "w");
+  if (!file_p) {
+    LOG_ERROR("Failed to open file for writing");
+    return EXIT_FAILURE;
+  }
+
+  for (size_t i = 0; i < config_line_vec->len; i++) {
+    fprintf(file_p, ":%s", scope_enum_to_str(config_line_vec->data[i].scope));
+    for (size_t j = 0; j < config_line_vec->data[j].fields->len; j++) {
+      fprintf(file_p, ":%s", config_line_vec->data[i].fields->str[j]);
+    }
+    if (config_line_vec->data[i].array != NULL
+        && config_line_vec->data[i].array->len > 0) {
+      fprintf(file_p, ":");
+      for (size_t k = 0; k < config_line_vec->data->array->len; k++) {
+        fprintf(file_p, "%s", config_line_vec->data->array->str[k]);
+        if (k < config_line_vec->data[i].array->len - 1) {
+          fprintf(file_p, ",");
+        }
+      }
+      fprintf(file_p, ";");
+    } else {
+      fprintf(file_p, ";");
+    }
+    fprintf(file_p, "\n");
+  }
+
+  fclose(file_p);
+  return EXIT_SUCCESS;
+}
