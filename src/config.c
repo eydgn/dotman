@@ -167,12 +167,12 @@ int parse_file(const char* filename, config_line_vec_t** config_line_vec) {
 }
 
 int sort_by_enums(config_line_vec_t* config_line_vec) {
-  for (size_t i = 0; i < config_line_vec->len - 2; i++) {
-    for (size_t j = i; j < config_line_vec->len - 2; j++) {
-      if (config_line_vec[j].data->scope > config_line_vec[j + 1].data->scope) {
-        config_line_vec_t tmp  = config_line_vec[j];
-        config_line_vec[j]     = config_line_vec[j + 1];
-        config_line_vec[j + 1] = tmp;
+  for (size_t i = 0; i < config_line_vec->len - 1; i++) {
+    for (size_t j = i; j < config_line_vec->len - i - 2; j++) {
+      if (config_line_vec->data[j].scope > config_line_vec->data[j + 1].scope) {
+        config_line_t tmp            = config_line_vec->data[j];
+        config_line_vec->data[j]     = config_line_vec->data[j + 1];
+        config_line_vec->data[j + 1] = tmp;
       }
     }
   }
@@ -183,31 +183,31 @@ int sort_by_fields(config_line_vec_t* config_line_vec) {
   size_t split = 0;
 
   for (; split < config_line_vec->len; split++) {
-    if (config_line_vec[split].data->scope == 2) {
+    if (config_line_vec->data[split].scope == 2) {
       break;
     }
   }
 
-  for (size_t i = 0; i < split - 1; i++) {
-    for (size_t j = i; j < split - 1; j++) {
-      if (strcmp(config_line_vec[j].data->fields->str[0],
-                 config_line_vec[j + 1].data->fields->str[0])
+  for (size_t i = 0; i < split; i++) {
+    for (size_t j = 0; j < split - i - 1; j++) {
+      if (strcmp(config_line_vec->data[j].fields->str[0],
+                 config_line_vec->data[j + 1].fields->str[0])
           > 0) {
-        config_line_vec_t tmp  = config_line_vec[j];
-        config_line_vec[j]     = config_line_vec[j + 1];
-        config_line_vec[j + 1] = tmp;
+        config_line_t tmp            = config_line_vec->data[j];
+        config_line_vec->data[j]     = config_line_vec->data[j + 1];
+        config_line_vec->data[j + 1] = tmp;
       }
     }
   }
 
-  for (size_t i = split + 1; i < config_line_vec->len - 2; i++) {
-    for (size_t j = i; j < config_line_vec->len - 2; j++) {
-      if (strcmp(config_line_vec[j].data->fields->str[0],
-                 config_line_vec[j + 1].data->fields->str[0])
+  for (size_t i = split + 1; i < config_line_vec->len - 1; i++) {
+    for (size_t j = split + 1; j < config_line_vec->len - (i - split) - 1; j++) {
+      if (strcmp(config_line_vec->data[j].fields->str[0],
+                 config_line_vec->data[j + 1].fields->str[0])
           > 0) {
-        config_line_vec_t tmp  = config_line_vec[j];
-        config_line_vec[j]     = config_line_vec[j + 1];
-        config_line_vec[j + 1] = tmp;
+        config_line_t tmp            = config_line_vec->data[j];
+        config_line_vec->data[j]     = config_line_vec->data[j + 1];
+        config_line_vec->data[j + 1] = tmp;
       }
     }
   }
