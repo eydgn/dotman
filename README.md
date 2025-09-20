@@ -4,15 +4,15 @@ dotfile and dependency manager.
 
 ## To do:
 
-- [ ] Config file:
-  - [ ] parser
+- [x] Config file:
+  - [x] parser
   - [ ] functios:
-    - [ ] add
+    - [x] write
     - [ ] delete
     - [ ] edit (find and replace)
 - [ ] cli:
-  - [ ] parser + skeleton
-  - [ ] add
+  - [x] parser + skeleton
+  - [x] add
   - [ ] list
   - [ ] remove
   - [ ] init
