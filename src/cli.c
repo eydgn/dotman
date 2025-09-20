@@ -91,3 +91,123 @@ int parse_args(int argc, char** argv, cli_cmd_type_t* result) {
   }
   return EXIT_SUCCESS;
 }
+
+int cmd_add(cli_cmd_type_t* cmd) {
+  if (cmd->scope == SCOPE_NONE) {
+    LOG_ERROR("Use with a scope");
+    return EXIT_FAILURE;
+  }
+  printf("cmd_add function executed. Scope: %d\n", cmd->scope);
+  return EXIT_SUCCESS;
+}
+
+int cmd_del(cli_cmd_type_t* cmd) {
+  if (cmd->scope == SCOPE_NONE) {
+    LOG_ERROR("Use with a scope");
+    return EXIT_FAILURE;
+  }
+  printf("cmd_delete function executed. Scope: %d\n", cmd->scope);
+  return EXIT_SUCCESS;
+}
+
+int cmd_list(cli_cmd_type_t* cmd) {
+  if (cmd->scope == SCOPE_NONE) {
+    LOG_ERROR("Use with a scope");
+    return EXIT_FAILURE;
+  }
+  printf("cmd_list function executed. Scope: %d\n", cmd->scope);
+  return EXIT_SUCCESS;
+}
+
+int cmd_edit(cli_cmd_type_t* cmd) {
+  if (cmd->scope == SCOPE_NONE) {
+    LOG_ERROR("Use with a scope");
+    return EXIT_FAILURE;
+  }
+  printf("cmd_edit function executed. Scope: %d\n", cmd->scope);
+  return EXIT_SUCCESS;
+}
+
+int cmd_sync(cli_cmd_type_t* cmd) {
+  if (cmd->scope != SCOPE_NONE) {
+    LOG_ERROR("Use without scope.\n");
+    return EXIT_FAILURE;
+  }
+  printf("cmd_sync function executed\n");
+  return EXIT_SUCCESS;
+}
+
+int cmd_init(cli_cmd_type_t* cmd) {
+  if (cmd->scope != SCOPE_NONE) {
+    LOG_ERROR("Use without scope.\n");
+    return EXIT_FAILURE;
+  }
+  printf("cmd_init function executed\n");
+  return EXIT_SUCCESS;
+}
+
+int cmd_backup(cli_cmd_type_t* cmd) {
+  if (cmd->scope != SCOPE_NONE) {
+    LOG_ERROR("Use without scope.\n");
+    return EXIT_FAILURE;
+  }
+  printf("cmd_backup function executed\n");
+  return EXIT_SUCCESS;
+}
+
+int cmd_help(cli_cmd_type_t* cmd) {
+  if (cmd->scope != SCOPE_NONE) {
+    LOG_ERROR("Help per-scope not implemented\n");
+    return EXIT_FAILURE;
+  }
+  printf("cmd_help function executed\n");
+  return EXIT_SUCCESS;
+}
+
+int cmd_version(cli_cmd_type_t* cmd) {
+  if (cmd->scope != SCOPE_NONE) {
+    LOG_ERROR("Use without scope.\n");
+    return EXIT_FAILURE;
+  }
+  printf("cmd_version function executed\n");
+  return EXIT_SUCCESS;
+}
+
+int cmd_unknown(void) {
+  LOG_ERROR("Unknown command.\n");
+  LOG_INFO("Check help.\n");
+  return EXIT_FAILURE;
+}
+
+int execute_cmd(cli_cmd_type_t* cmd) {
+  if (!cmd) {
+    LOG_ERROR("No command struct provided.\n");
+    return EXIT_FAILURE;
+  }
+
+  switch (cmd->cmd) {
+    case CMD_ADD:
+      return cmd_add(cmd);
+    case CMD_DEL:
+      return cmd_del(cmd);
+    case CMD_LIST:
+      return cmd_list(cmd);
+    case CMD_EDIT:
+      return cmd_edit(cmd);
+    case CMD_SYNC:
+      return cmd_sync(cmd);
+    case CMD_INIT:
+      return cmd_init(cmd);
+    case CMD_BACKUP:
+      return cmd_version(cmd);
+    case CMD_HELP:
+      return cmd_help(cmd);
+    case CMD_VERSION:
+      return cmd_backup(cmd);
+    case CMD_UNKNOWN:
+      return cmd_unknown();
+    case CMD_NONE:
+      break;
+  }
+  return EXIT_SUCCESS;
+}
