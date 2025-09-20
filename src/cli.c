@@ -41,8 +41,11 @@ scope_type_t extract_scope(const char* scp) {
   if (!(strcmp("dot", scp))) {
     return SCOPE_DOT;
   }
-  if (!(strcmp("dep", scp))) {
-    return SCOPE_DEP;
+  if (!(strcmp("pkg", scp))) {
+    return SCOPE_PKG;
+  }
+  if (!(strcmp("bld", scp))) {
+    return SCOPE_BLD;
   }
   return SCOPE_UNKNOWN;
 }

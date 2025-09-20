@@ -8,7 +8,9 @@
 typedef enum {
   SCOPE_NONE = 0,
   SCOPE_DOT,
-  SCOPE_DEP,
+  SCOPE_PKG,
+  SCOPE_BLD,
+  SCOPE_SET,
   SCOPE_UNKNOWN,
 } scope_type_t;
 
