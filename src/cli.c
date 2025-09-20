@@ -5,6 +5,7 @@
 #include <string.h>
 
 #include "common.h"
+#include "config.h"
 
 cmd_type_t extract_cmd(const char* cmd) {
   if (!(strcmp("add", cmd))) {
@@ -95,12 +96,24 @@ int parse_args(int argc, char** argv, cli_cmd_type_t* result) {
   return EXIT_SUCCESS;
 }
 
-int cmd_add(cli_cmd_type_t* cmd) {
+int cmd_add(cli_cmd_type_t* cmd, config_line_vec_t* vec) {
   if (cmd->scope == SCOPE_NONE) {
-    LOG_ERROR("Use with a scope");
+    LOG_ERROR("Use with a scope.");
+    printf("Check help.\n");
     return EXIT_FAILURE;
   }
-  printf("cmd_add function executed. Scope: %d\n", cmd->scope);
+
+  if (cmd->scope == SCOPE_SET || cmd->scope == SCOPE_UNKNOWN) {
+    LOG_ERROR("Wrong use.");
+    printf("Check help.\n");
+    return EXIT_FAILURE;
+  }
+
+  config_line_t line;
+  line.scope  = cmd->scope;
+  line.fields = cmd->fields;
+  line.array  = cmd->array;
+  config_line_vec_push(vec, line);
   return EXIT_SUCCESS;
 }
 
@@ -182,7 +195,7 @@ int cmd_unknown(void) {
   return EXIT_FAILURE;
 }
 
-int execute_cmd(cli_cmd_type_t* cmd) {
+int execute_cmd(cli_cmd_type_t* cmd, config_line_vec_t* vec) {
   if (!cmd) {
     LOG_ERROR("No command struct provided.\n");
     return EXIT_FAILURE;
@@ -190,13 +203,13 @@ int execute_cmd(cli_cmd_type_t* cmd) {
 
   switch (cmd->cmd) {
     case CMD_ADD:
-      return cmd_add(cmd);
+      return cmd_add(cmd, vec);
     case CMD_DEL:
-      return cmd_del(cmd);
+      return cmd_del(cmd, vec);
     case CMD_LIST:
-      return cmd_list(cmd);
+      return cmd_list(cmd, vec);
     case CMD_EDIT:
-      return cmd_edit(cmd);
+      return cmd_edit(cmd, vec);
     case CMD_SYNC:
       return cmd_sync(cmd);
     case CMD_INIT:

@@ -5,6 +5,7 @@
 #include <stddef.h>
 
 #include "common.h"
+#include "config.h"
 
 #define DOTMAN_VERSION "v0.1.0"
 typedef enum {
@@ -33,7 +34,7 @@ scope_type_t extract_scope(const char* scp);
 int          extract_array_cli_cmd(cli_cmd_type_t* cli_cmd, char* data);
 int          parse_args(int argc, char** argv, cli_cmd_type_t* result);
 
-int cmd_add(cli_cmd_type_t* cmd);
+int cmd_add(cli_cmd_type_t* cmd, config_line_vec_t* vec);
 int cmd_del(cli_cmd_type_t* cmd);
 int cmd_list(cli_cmd_type_t* cmd);
 int cmd_edit(cli_cmd_type_t* cmd);
@@ -44,6 +45,6 @@ int cmd_help(cli_cmd_type_t* cmd);
 int cmd_version(cli_cmd_type_t* cmd);
 int cmd_unknown(void);
 
-int execute_cmd(cli_cmd_type_t* cmd);
+int execute_cmd(cli_cmd_type_t* cmd, config_line_vec_t* vec);
 
 #endif  // !CLI_H
