@@ -11,3 +11,4 @@ Checks: >
 WarningsAsErrors: '*'
 HeaderFilterRegex: '.*'
 FormatStyle: none
+UseColor: true
