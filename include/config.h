@@ -14,12 +14,11 @@ typedef struct {
 
 DEFINE_VECTOR(config_line_t, config_line)
 
-char* trim(char* str);
-int   extract_array_config_line(config_line_t* config_line, char* data);
-int   parse_line(config_line_vec_t* config_line_vec, char* line);
-int   parse_file(const char* filename, config_line_vec_t** config_line_vec);
-int   sort_by_enums(config_line_vec_t* config_line_vec);
-int   sort_by_fields(config_line_vec_t* config_line_ve);
-int   write_config(config_line_vec_t* config_line_vec, const char* filename);
+int extract_array_config_line(config_line_t* config_line, char* data);
+int parse_line(config_line_vec_t* config_line_vec, char* line);
+int parse_file(const char* filename, config_line_vec_t** config_line_vec);
+int sort_by_enums(config_line_vec_t* config_line_vec);
+int sort_by_fields(config_line_vec_t* config_line_ve);
+int write_config(config_line_vec_t* config_line_vec, const char* filename);
 
 #endif

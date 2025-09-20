@@ -24,3 +24,14 @@ const char* scope_enum_to_str(scope_type_t scope) {
   }
   return NULL;
 }
+
+char* trim(char* str) {
+  while (*str && isspace((unsigned char) *str)) {
+    str++;
+  }
+  char* end = str + strlen(str) - 1;
+  while (end > str && isspace((unsigned char) *end)) {
+    *end-- = '\0';
+  }
+  return str;
+}
