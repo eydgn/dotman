@@ -1,6 +1,8 @@
 #include "common.h"
 
 #include <string.h>
+
+#include "ctype.h"
 scope_type_t scope_str_to_enum(const char* scp) {
   if (!(strcmp("dot", scp))) {
     return SCOPE_DOT;
