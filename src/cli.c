@@ -37,6 +37,16 @@ cmd_type_t extract_cmd(const char* cmd) {
   return CMD_UNKNOWN;
 }
 
+scope_type_t extract_scope(const char* scp) {
+  if (!(strcmp("dot", scp))) {
+    return SCOPE_DOT;
+  }
+  if (!(strcmp("dep", scp))) {
+    return SCOPE_DEP;
+  }
+  return SCOPE_UNKNOWN;
+}
+
 int parse_args(int argc, char** argv, cli_cmd_type_t* result) {
   if (!result) {
     return false;
