@@ -20,21 +20,8 @@ char* trim(char* str) {
   return str;
 }
 
-int extract_array(config_line_t* config_line, char* data) {
-  char* saveptr;
-  char* element = strtok_r(data, ",", &saveptr);
-  while (element != NULL) {
-    element = trim(element);
-    if (*element == '\0') {
-      LOG_ERROR("Empty element in the array field.");
-      return EXIT_FAILURE;
-    }
-    if (str_vec_push(config_line->array, element)) {
-      LOG_ERROR("Failed to push element to array.");
-      return EXIT_FAILURE;
-    }
-    element = strtok_r(NULL, ",", &saveptr);
-  }
+int extract_array_config_line(config_line_t* config_line, char* data) {
+  EXTRACT_ARRAY(config_line, data);
   return EXIT_SUCCESS;
 }
 
@@ -77,7 +64,7 @@ int parse_line(config_line_vec_t* config_line_vec, char* line) {
     }
 
     if ((strchr(data, ',')) != NULL) {
-      if (extract_array(&config_line, data)) {
+      if (extract_array_config_line(&config_line, data)) {
         LOG_ERROR("Failed to extract array");
         str_vec_free(&config_line.fields);
         str_vec_free(&config_line.array);

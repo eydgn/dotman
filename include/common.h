@@ -35,4 +35,20 @@ DEFINE_STR_VECTOR
 #define LOG_INFO(msg, ...)                                                       \
   fprintf(stdout, COLOR_BLUE "[INFO] %s:%d:%s()\n" COLOR_RESET "   ↳ " msg "\n", \
           __FILE__, __LINE__, __func__, ##__VA_ARGS__)
+
+#define EXTRACT_ARRAY(struct_ptr, data)               \
+  char* saveptr;                                      \
+  char* element = strtok_r(data, ",", &saveptr);      \
+  while (element != NULL) {                           \
+    element = trim(element);                          \
+    if (*element == '\0') {                           \
+      LOG_ERROR("Empty element in the array field."); \
+      return EXIT_FAILURE;                            \
+    }                                                 \
+    if (str_vec_push((struct_ptr)->array, element)) { \
+      LOG_ERROR("Failed to push element to array.");  \
+      return EXIT_FAILURE;                            \
+    }                                                 \
+    element = strtok_r(NULL, ",", &saveptr);          \
+  }
 #endif  // !COMMON_H
