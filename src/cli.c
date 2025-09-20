@@ -47,6 +47,11 @@ scope_type_t extract_scope(const char* scp) {
   return SCOPE_UNKNOWN;
 }
 
+int extract_array_cli_cmd(cli_cmd_type_t* cli_cmd, char* data) {
+  EXTRACT_ARRAY(cli_cmd, data);
+  return EXIT_SUCCESS;
+}
+
 int parse_args(int argc, char** argv, cli_cmd_type_t* result) {
   if (!result) {
     return false;
