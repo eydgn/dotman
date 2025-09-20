@@ -37,4 +37,42 @@ cmd_type_t extract_cmd(const char* cmd) {
   return CMD_UNKNOWN;
 }
 
+int parse_args(int argc, char** argv, cli_cmd_type_t* result) {
+  if (!result) {
+    return false;
+  }
+  result->cmd    = CMD_NONE;
+  result->scope  = SCOPE_NONE;
+  result->fields = NULL;
+  result->array  = NULL;
 
+  for (int i = 1; i < argc; i++) {
+    if (i == 1) {
+      result->cmd = extract_cmd(argv[i]);
+    } else if (i == 2) {
+      result->scope = extract_scope(argv[i]);
+    } else {
+      if (str_vec_new(&result->fields) != 0) {
+        LOG_ERROR("Failed to create str_vec for result->fields");
+        return EXIT_FAILURE;
+      }
+      if (str_vec_new(&result->array) != 0) {
+        LOG_ERROR("Failed to create str_vec for result->array");
+        str_vec_free(&result->fields);
+        return EXIT_FAILURE;
+      }
+
+      if ((strchr(argv[i], ',')) != NULL) {
+        if (extract_array_cli_cmd(result, argv[i])) {
+          LOG_ERROR("Failed to extract array");
+          str_vec_free(&result->fields);
+          str_vec_free(&result->array);
+          return EXIT_FAILURE;
+        }
+        continue;
+      }
+      str_vec_push(result->fields, argv[i]);
+    }
+  }
+  return EXIT_SUCCESS;
+}
