@@ -1,0 +1,3 @@
+[submodule "ext/cvector"]
+	path = ext/cvector
+	url = https://github.com/eydgn/cvector
