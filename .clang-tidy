@@ -1,0 +1,29 @@
+# clang-tidy
+Checks: >
+  clang-analyzer-*,
+  bugprone-*,
+  performance-*,
+  readability-*,
+  portability-*,
+  modernize-*,
+  cert-*,
+  misc-*,
+  -modernize-use-trailing-return-type,
+  -readability-magic-numbers,
+  -readability-identifier-length,
+  -cert-dcl37-c,
+  -cert-dcl51-cpp,
+  -bugprone-easily-swappable-parameters
+
+WarningsAsErrors: '*'
+HeaderFilterRegex: '.*'
+FormatStyle: file
+UseColor: true
+
+CheckOptions:
+  - key: readability-function-cognitive-complexity.Threshold
+    value: 25
+  - key: readability-function-size.LineThreshold
+    value: 150
+  - key: bugprone-sizeof-expression.WarnOnSizeOfCompareToConstant
+    value: true

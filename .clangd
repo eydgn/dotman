@@ -1,0 +1,42 @@
+# clangd
+CompileFlags:
+  Add:
+    - -xc
+
+Diagnostics:
+  UnusedIncludes: Strict
+  MissingIncludes: Strict
+
+  Suppress:
+    - pp_file_not_found
+
+  ClangTidy:
+    Add:
+      - bugprone-*
+      - performance-*
+      - readability-*
+      - cert-*
+    # Remove:
+      - modernize-use-trailing-return-type
+      - readability-identifier-length
+      - readability-magic-numbers
+
+InlayHints:
+  Enabled: true
+  ParameterNames: true
+  DeducedTypes: true
+  Designators: true
+
+Hover:
+  ShowAKA: true
+
+Completion:
+  AllScopes: true
+
+Index:
+  Background: Build
+  StandardLibrary: true
+
+SemanticTokens:
+  DisabledKinds: []
+  DisabledModifiers: []
