@@ -1,0 +1,2 @@
+# dotman
+dotfile manager
