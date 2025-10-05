@@ -24,7 +24,6 @@ AllowShortEnumsOnASingleLine: false
 # Operators and expressions
 BreakBeforeBinaryOperators: NonAssignment
 AlignOperands: Align
-AlignAfterOpenBracket: Align
 
 # Pointers and references
 PointerAlignment: Left
