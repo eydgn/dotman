@@ -3,8 +3,8 @@ BasedOnStyle: Chromium
 Language: C
 
 # Indentation
-IndentWidth: 4
-TabWidth: 4
+IndentWidth: 2
+TabWidth: 2
 UseTab: Never
 IndentCaseLabels: true
 IndentCaseBlocks: true
