@@ -22,16 +22,17 @@ void log_message(log_level_t level, const char* file, int line, const char* func
   int use_color = isatty(fileno(stderr));
 
   if (use_color) {
-    fprintf(stderr, "%s[%s]%s ", level_colors[level], level_names[level], COLOR_RESET);
+    (void) fprintf(stderr, "%s[%s]%s ", level_colors[level], level_names[level],
+                   COLOR_RESET);
   } else {
-    fprintf(stderr, "[%s] ", level_names[level]);
+    (void) fprintf(stderr, "[%s] ", level_names[level]);
   }
 
   if (level == LOG_ERROR) {
-    fprintf(stderr, "%s:%s():%d -> ", file, func, line);
+    (void) fprintf(stderr, "%s:%s():%d -> ", file, func, line);
   }
 
-  fprintf(stderr, "%s\n", msg);
+  (void) fprintf(stderr, "%s\n", msg);
 
-  fflush(stderr);
+  (void) fflush(stderr);
 }
