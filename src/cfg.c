@@ -1,5 +1,6 @@
 #include "cfg.h"
 
+#include <stdio.h>
 #include <stdlib.h>
 
 #include "core.h"
@@ -24,14 +25,10 @@ int parse_line(entry_t* entries, char* line) {
   char* token = strtok_r(line, ",", &saveptr);
 
   while (token != NULL) {
-    if (*token == '\0') {
-      LOG_ERROR("Empty field in the config file!");
-      svec_free(&entry);
-      return EXIT_FAILURE;
+    if (*token != '\0') {
+      svec_push(entry, token);
+      token = strtok_r(line, ",", &saveptr);
     }
-
-    svec_push(entry, token);
-    token = strtok_r(line, ",", &saveptr);
   }
 
   entry_push(entries, *(entry));
