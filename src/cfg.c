@@ -29,11 +29,13 @@ int parse_line(entry_t* entries, char* line) {
   while (token != NULL) {
     if (*token != '\0') {
       svec_push(entry, token);
-      token = strtok_r(line, ",", &saveptr);
+      token = strtok_r(NULL, ",", &saveptr);
     }
   }
 
   entry_push(entries, *(entry));
+  free(entry);
+
   return EXIT_SUCCESS;
 }
 
