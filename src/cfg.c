@@ -108,3 +108,23 @@ int read_cfg(const char* filename, entry_t** entries) {
 
   return EXIT_SUCCESS;
 }
+
+int sort_by_names(entry_t* entries) {
+  if (entries->len == 0) {
+    LOG_ERROR("entries is empty");
+    return EXIT_FAILURE;
+  }
+
+  for (size_t i = 0; i < entries->len; i++) {
+    for (size_t j = 0; j < entries->len - i - 1; j++) {
+      if (strcmp(entries->data[j].str[0], entries->data[j + 1].str[0]) > 0) {
+        svec_t tmp           = entries->data[j];
+        entries->data[j]     = entries->data[j + 1];
+        entries->data[j + 1] = tmp;
+      }
+    }
+  }
+
+  return EXIT_SUCCESS;
+}
+
