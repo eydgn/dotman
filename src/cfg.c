@@ -15,39 +15,34 @@
  *
  */
 
-int parse_line(entry_t* entries, char* line) {
-  if (!entries || !line) {
+int parse_line(svec_t** entry, char* line) {
+  if (!entry || !line) {
     LOG_ERROR("entries or line is NULL");
     return EXIT_FAILURE;
   }
-  svec_t* entry;
-  svec_new(&entry);
 
-  size_t field_c = 1;
-  size_t line_c  = 1;
+  svec_new(entry);
+
+  size_t field_c = 0;
   char*  saveptr;
   char*  token = strtok_r(line, ",", &saveptr);
 
   while (token != NULL) {
     if (*token == '\0') {
-      LOG_ERROR("entry has empty fields %d:%d", line_c, field_c);
-      free(entry);
+      LOG_ERROR("entry has empty fields");
+      svec_free(entry);
       return EXIT_FAILURE;
     }
-    svec_push(entry, token);
+    svec_push(*entry, token);
     token = strtok_r(NULL, ",", &saveptr);
     field_c++;
-    line_c++;
   }
 
   if (field_c != 3) {
     LOG_ERROR("entry has more or less than 3 fields");
-    free(entry);
+    svec_free(entry);
     return EXIT_FAILURE;
   }
-  entry_push(entries, *(entry));
-  free(entry);
-
   return EXIT_SUCCESS;
 }
 
@@ -106,17 +101,19 @@ int read_cfg(const char* filename, entry_t** entries) {
   }
 
   char* saveptr;
-  char* token = strtok_r(buffer, ";", &saveptr);
+  char* token = strtok_r(buffer, "\n", &saveptr);
 
   while (token != NULL) {
     if (*token != '\0') {
-      if (parse_line((*entries), token)) {
+      svec_t* result;
+      if (parse_line(&result, token)) {
         LOG_ERROR("Failed to parse line");
         free(buffer);
         return EXIT_FAILURE;
       }
 
-      token = strtok_r(NULL, ";", &saveptr);
+      entry_push(*entries, (entry_ref_t) {.entry = result});
+      token = strtok_r(NULL, "\n;", &saveptr);
     }
   }
 
@@ -133,8 +130,9 @@ int sort_by_names(entry_t* entries) {
 
   for (size_t i = 0; i < entries->len; i++) {
     for (size_t j = 0; j < entries->len - i - 1; j++) {
-      if (strcmp(entries->data[j].str[0], entries->data[j + 1].str[0]) > 0) {
-        svec_t tmp           = entries->data[j];
+      if (strcmp(entries->data[j].entry->str[0], entries->data[j + 1].entry->str[0])
+          > 0) {
+        entry_ref_t tmp      = entries->data[j];
         entries->data[j]     = entries->data[j + 1];
         entries->data[j + 1] = tmp;
       }
@@ -162,8 +160,8 @@ int write_cfg(entry_t* entries, const char* filename) {
   }
 
   for (size_t i = 0; i < entries->len; i++) {
-    (void) fprintf(file_ptr, "%s,%s,%s;", entries->data[i].str[0],
-                   entries->data[i].str[1], entries->data[i].str[2]);
+    (void) fprintf(file_ptr, "%s,%s,%s\n", entries->data[i].entry->str[0],
+                   entries->data[i].entry->str[1], entries->data[i].entry->str[2]);
   }
 
   (void) fclose(file_ptr);

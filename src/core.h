@@ -3,6 +3,9 @@
 #include "cvector.h"
 
 SVEC_DEF
-VEC_DEF(svec_t, entry)
+typedef struct {
+  svec_t* entry;
+} entry_ref_t;
+VEC_DEF(entry_ref_t, entry)
 
 #endif  // !CORE_H
