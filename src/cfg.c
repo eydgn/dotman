@@ -23,16 +23,28 @@ int parse_line(entry_t* entries, char* line) {
   svec_t* entry;
   svec_new(&entry);
 
-  char* saveptr;
-  char* token = strtok_r(line, ",", &saveptr);
+  size_t field_c = 1;
+  size_t line_c  = 1;
+  char*  saveptr;
+  char*  token = strtok_r(line, ",", &saveptr);
 
   while (token != NULL) {
-    if (*token != '\0') {
-      svec_push(entry, token);
-      token = strtok_r(NULL, ",", &saveptr);
+    if (*token == '\0') {
+      LOG_ERROR("entry has empty fields %d:%d", line_c, field_c);
+      free(entry);
+      return EXIT_FAILURE;
     }
+    svec_push(entry, token);
+    token = strtok_r(NULL, ",", &saveptr);
+    field_c++;
+    line_c++;
   }
 
+  if (field_c != 3) {
+    LOG_ERROR("entry has more or less than 3 fields");
+    free(entry);
+    return EXIT_FAILURE;
+  }
   entry_push(entries, *(entry));
   free(entry);
 
