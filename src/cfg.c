@@ -1,7 +1,9 @@
 #include "cfg.h"
 
+#include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "core.h"
 #include "log.h"
@@ -128,3 +130,28 @@ int sort_by_names(entry_t* entries) {
   return EXIT_SUCCESS;
 }
 
+int write_cfg(entry_t* entries, const char* filename) {
+  if (!filename || !entries) {
+    LOG_ERROR("filename or entries are NULL");
+    return EXIT_FAILURE;
+  }
+
+  if (sort_by_names(entries)) {
+    LOG_ERROR("sort_by_names failed");
+    return EXIT_FAILURE;
+  }
+
+  FILE* file_ptr = fopen(filename, "w");
+  if (!file_ptr) {
+    LOG_ERROR("Failed to open file for writing");
+    return EXIT_FAILURE;
+  }
+
+  for (size_t i = 0; i < entries->len; i++) {
+    (void) fprintf(file_ptr, "%s,%s,%s;", entries->data[i].str[0],
+                   entries->data[i].str[1], entries->data[i].str[2]);
+  }
+
+  (void) fclose(file_ptr);
+  return EXIT_SUCCESS;
+}
