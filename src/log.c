@@ -1,5 +1,6 @@
 #include "log.h"
 
+#include <stddef.h>
 #include <stdio.h>
 #include <unistd.h>
 
@@ -18,7 +19,7 @@ static const char* level_names[] = {
 static const char* COLOR_RESET = "\033[0m";
 
 void log_message(log_level_t level, const char* file, int line, const char* func,
-                 const char* msg) {
+                 const char* fmt, ...) {
   int use_color = isatty(fileno(stderr));
 
   if (use_color) {
@@ -32,7 +33,13 @@ void log_message(log_level_t level, const char* file, int line, const char* func
     (void) fprintf(stderr, "%s:%s():%d -> ", file, func, line);
   }
 
-  (void) fprintf(stderr, "%s\n", msg);
+  va_list args;
+  va_start(args, fmt);
+  char buffer[1024];
+  (void) vsnprintf(buffer, sizeof(buffer), fmt, args);
+  (void) fprintf(stderr, "%s", buffer);
+  va_end(args);
 
+  (void) fprintf(stderr, "\n");
   (void) fflush(stderr);
 }

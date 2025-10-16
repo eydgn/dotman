@@ -8,8 +8,8 @@ typedef enum {
 } log_level_t;
 
 void log_message(log_level_t level, const char* file, int line, const char* func,
-                 const char* msg);
-#define LOG_ERROR(msg) log_message(LOG_ERROR, __FILE__, __LINE__, __func__, msg)
-#define LOG_WARN(msg)  log_message(LOG_WARN, __FILE__, __LINE__, __func__, msg)
-#define LOG_INFO(msg)  log_message(LOG_INFO, __FILE__, __LINE__, __func__, msg)
+                 const char* fmt, ...);
+#define LOG_ERROR(...) log_message(LOG_ERROR, __FILE__, __LINE__, __func__, __VA_ARGS__)
+#define LOG_WARN(...)  log_message(LOG_WARN, __FILE__, __LINE__, __func__, __VA_ARGS__)
+#define LOG_INFO(...)  log_message(LOG_INFO, __FILE__, __LINE__, __func__, __VA_ARGS__)
 #endif  // !LOG_H
