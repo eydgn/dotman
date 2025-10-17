@@ -76,3 +76,34 @@ int copy_args(cmd_t* cmd, int argc, char* argv[]) {
 
   return EXIT_SUCCESS;
 }
+
+int exec_cmd(cmd_t* cmd) {
+  if (!cmd) {
+    LOG_ERROR("cmd is NULL");
+    return EXIT_FAILURE;
+  }
+
+  switch (cmd->action) {
+    case CMD_ADD:
+      return cmd_add(cmd);
+    case CMD_DEL:
+      return cmd_del(cmd);
+    case CMD_LIST:
+      return cmd_list(cmd);
+    case CMD_EDIT:
+      return cmd_edit(cmd);
+    case CMD_SYNC:
+      return cmd_sync(cmd);
+    case CMD_INIT:
+      return cmd_init(cmd);
+    case CMD_BACKUP:
+      return cmd_version(cmd);
+    case CMD_HELP:
+      return cmd_help(cmd);
+    case CMD_VER:
+      return cmd_backup(cmd);
+    case CMD_ERROR:
+      return cmd_error();
+  }
+  return EXIT_SUCCESS;
+}
