@@ -33,7 +33,13 @@ int parse_line(svec_t** entry, char* line) {
       svec_free(entry);
       return EXIT_FAILURE;
     }
-    svec_push(*entry, token);
+
+    if (svec_push(*entry, token)) {
+      LOG_ERROR("svec_push failed");
+      svec_free(entry);
+      return EXIT_FAILURE;
+    }
+
     token = strtok_r(NULL, ",", &saveptr);
     field_c++;
   }
@@ -60,7 +66,7 @@ int read_cfg(const char* filename, entry_t** entries) {
   }
 
   // get file size
-  if (fseek(file_ptr, (size_t) 0, SEEK_END)) {
+  if (fseek(file_ptr, 0, SEEK_END)) {
     LOG_ERROR("fseek failed");
     (void) fclose(file_ptr);
     return EXIT_FAILURE;
@@ -75,7 +81,7 @@ int read_cfg(const char* filename, entry_t** entries) {
 
   size_t file_size = (size_t) file_size_long;
 
-  if (fseek(file_ptr, (size_t) 0, SEEK_SET)) {
+  if (fseek(file_ptr, 0, SEEK_SET)) {
     LOG_ERROR("fseek failed");
     (void) fclose(file_ptr);
     return EXIT_FAILURE;
@@ -108,13 +114,13 @@ int read_cfg(const char* filename, entry_t** entries) {
       svec_t* result;
       if (parse_line(&result, token)) {
         LOG_ERROR("Failed to parse line");
+        entry_free(entries);
         free(buffer);
         return EXIT_FAILURE;
       }
-
       entry_push(*entries, (entry_ref_t) {.entry = result});
-      token = strtok_r(NULL, "\n;", &saveptr);
     }
+    token = strtok_r(NULL, "\n;", &saveptr);
   }
 
   free(buffer);
@@ -123,12 +129,16 @@ int read_cfg(const char* filename, entry_t** entries) {
 }
 
 int sort_by_names(entry_t* entries) {
-  if (entries->len == 0) {
+  if (!entries || entries->len == 0) {
     LOG_ERROR("entries is empty");
     return EXIT_FAILURE;
   }
 
   for (size_t i = 0; i < entries->len; i++) {
+    if (entries->data[i].entry->len != 3) {
+      LOG_ERROR("entries has less or more than 3 fileds");
+      return EXIT_FAILURE;
+    }
     for (size_t j = 0; j < entries->len - i - 1; j++) {
       if (strcmp(entries->data[j].entry->str[0], entries->data[j + 1].entry->str[0])
           > 0) {
@@ -160,8 +170,13 @@ int write_cfg(entry_t* entries, const char* filename) {
   }
 
   for (size_t i = 0; i < entries->len; i++) {
-    (void) fprintf(file_ptr, "%s,%s,%s\n", entries->data[i].entry->str[0],
-                   entries->data[i].entry->str[1], entries->data[i].entry->str[2]);
+    if (fprintf(file_ptr, "%s,%s,%s\n", entries->data[i].entry->str[0],
+                entries->data[i].entry->str[1], entries->data[i].entry->str[2])
+        < 0) {
+      LOG_ERROR("Failed to write file");
+      (void) fclose(file_ptr);
+      return EXIT_FAILURE;
+    }
   }
 
   (void) fclose(file_ptr);
