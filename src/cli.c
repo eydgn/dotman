@@ -97,13 +97,16 @@ int exec_cmd(cmd_t* cmd) {
     case CMD_INIT:
       return cmd_init(cmd);
     case CMD_BACKUP:
-      return cmd_version(cmd);
+      return cmd_backup(cmd);
     case CMD_HELP:
       return cmd_help(cmd);
     case CMD_VER:
-      return cmd_backup(cmd);
+      return cmd_version(cmd);
     case CMD_ERROR:
       return cmd_error();
+    default:
+      LOG_ERROR("Unexpected action type.");
+      return EXIT_FAILURE;
   }
   return EXIT_SUCCESS;
 }
