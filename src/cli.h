@@ -1,0 +1,39 @@
+#ifndef CLI_H
+#define CLI_H
+
+#include "core.h"
+
+typedef enum {
+  CMD_ADD,
+  CMD_DEL,
+  CMD_LIST,
+  CMD_EDIT,
+  CMD_SYNC,
+  CMD_INIT,
+  CMD_BACKUP,
+  CMD_HELP,
+  CMD_VER,
+  CMD_ERROR,
+} cli_action_t;
+
+typedef struct {
+  cli_action_t action;
+  svec_t       args;
+} cmd_t;
+
+int extract_action(cmd_t* cmd, const char* action);
+int copy_args(cmd_t* cmd, int argc, char* argv[]);
+
+int cmd_add(cmd_t* cmd);
+int cmd_del(cmd_t* cmd);
+int cmd_list(cmd_t* cmd);
+int cmd_edit(cmd_t* cmd);
+int cmd_sync(cmd_t* cmd);
+int cmd_init(cmd_t* cmd);
+int cmd_backup(cmd_t* cmd);
+int cmd_help(cmd_t* cmd);
+int cmd_version(cmd_t* cmd);
+int cmd_error(void);
+
+int exec_cmd(cmd_t* cmd);
+#endif  // !CLI_H
