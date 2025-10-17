@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "core.h"
 #include "log.h"
 
 int extract_action(cmd_t* cmd, const char* action) {
@@ -57,5 +58,21 @@ int extract_action(cmd_t* cmd, const char* action) {
   }
 
   cmd->action = CMD_ERROR;
+  return EXIT_SUCCESS;
+}
+
+int copy_args(cmd_t* cmd, int argc, char* argv[]) {
+  if (!cmd || argc < 1 || !argv) {
+    LOG_ERROR("cmd or argv is NULL or argc is less then 1");
+    return EXIT_FAILURE;
+  }
+
+  for (int i = 0; i < argc; i++) {
+    if (svec_push(&cmd->args, argv[i])) {
+      LOG_ERROR("sevc_push failed");
+      return EXIT_FAILURE;
+    }
+  }
+
   return EXIT_SUCCESS;
 }
