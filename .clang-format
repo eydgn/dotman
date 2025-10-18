@@ -1,18 +1,11 @@
-# .clang-format
 BasedOnStyle: Chromium
 Language: C
-
-# Indentation
-IndentWidth: 2
-TabWidth: 2
+IndentWidth: 4
+TabWidth: 4
 UseTab: Never
 IndentCaseLabels: true
 IndentCaseBlocks: true
-
-# Line length
-ColumnLimit: 88
-
-# Braces
+ColumnLimit: 90
 BreakBeforeBraces: Attach
 AllowShortBlocksOnASingleLine: Never
 AllowShortCaseLabelsOnASingleLine: false
@@ -20,22 +13,14 @@ AllowShortFunctionsOnASingleLine: None
 AllowShortIfStatementsOnASingleLine: Never
 AllowShortLoopsOnASingleLine: false
 AllowShortEnumsOnASingleLine: false
-
-# Operators and expressions
 BreakBeforeBinaryOperators: NonAssignment
 AlignOperands: Align
-
-# Pointers and references
 PointerAlignment: Left
 DerivePointerAlignment: false
-
-# Spacing
 SpaceAfterCStyleCast: true
 SpaceBeforeParens: ControlStatementsExceptControlMacros
 SpaceBeforeAssignmentOperators: true
 SpaceInEmptyParentheses: false
-
-# Alignment
 AlignConsecutiveAssignments:
   Enabled: true
   AcrossEmptyLines: false
@@ -50,29 +35,17 @@ AlignConsecutiveMacros:
   AcrossComments: false
 AlignArrayOfStructures: Left
 AlignEscapedNewlines: Left
-
-# Includes
 SortIncludes: CaseSensitive
 IncludeBlocks: Regroup
-
-# Function parameters and arguments
-BinPackArguments: true
+BinPackArguments: false
 BinPackParameters: true
 AllowAllParametersOfDeclarationOnNextLine: false
 AlignAfterOpenBracket: Align
-
-# Return types
 AlwaysBreakAfterReturnType: None
-
-# Empty lines
 MaxEmptyLinesToKeep: 1
 KeepEmptyLinesAtTheStartOfBlocks: false
-
-# Comments
 ReflowComments: true
 SpacesBeforeTrailingComments: 2
-
-# Penalties (fine-tuning line breaking decisions)
 PenaltyBreakBeforeFirstCallParameter: 19
 PenaltyBreakComment: 300
 PenaltyBreakFirstLessLess: 120
