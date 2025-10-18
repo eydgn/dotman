@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
+#include <termios.h>
 #include <unistd.h>
 
 #include "core.h"
@@ -108,6 +109,20 @@ int find_by_name(const char* name, entry_t* entries)
         }
     }
     return -1;
+}
+
+static char getch(void)
+{
+    struct termios oldt;
+    struct termios newt;
+    char           ch;
+    tcgetattr(STDIN_FILENO, &oldt);
+    newt = oldt;
+    newt.c_lflag &= (tcflag_t) ~(ICANON | ECHO);
+    tcsetattr(STDIN_FILENO, TCSANOW, &newt);
+    ch = (char) getchar();
+    tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
+    return ch;
 }
 
 int cmd_add(cmd_t* cmd, entry_t* entries)
