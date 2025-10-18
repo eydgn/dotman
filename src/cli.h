@@ -26,7 +26,7 @@ int copy_args(cmd_t* cmd, int argc, char* argv[]);
 
 int cmd_add(cmd_t* cmd, entry_t* entries);
 int cmd_del(cmd_t* cmd, entry_t* entries);
-int cmd_list(cmd_t* cmd, entry_t* entries);
+int cmd_list(entry_t* entries);
 int cmd_edit(cmd_t* cmd, entry_t* entries);
 int cmd_sync(cmd_t* cmd, entry_t* entries);
 int cmd_init(cmd_t* cmd, entry_t* entries);

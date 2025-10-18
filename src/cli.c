@@ -1,6 +1,7 @@
 #include "cli.h"
 
 #include <stdbool.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
@@ -108,8 +109,8 @@ int cmd_add(cmd_t* cmd, entry_t* entries) {
 
   // create the symlink
   if (symlink(cmd->args.str[1], cmd->args.str[2]) == 0) {
-    LOG_INFO("Symbolic link created.\nFrom: %s\tTo: %s", cmd->args.str[1],
-             cmd->args.str[2]);
+    LOG_INFO(
+        "Symbolic link created.\nFrom: %s\tTo: %s", cmd->args.str[1], cmd->args.str[2]);
   } else {
     LOG_ERROR("Failed to create symbolic link.");
     return EXIT_FAILURE;
@@ -185,6 +186,30 @@ int cmd_del(cmd_t* cmd, entry_t* entries) {
   return EXIT_SUCCESS;
 }
 
+int cmd_list(entry_t* entries) {
+  if (!entries) {
+    LOG_ERROR("entries is NULL.");
+    return EXIT_FAILURE;
+  }
+
+  printf("%-20s %-40s %-40s %-10s\n", "Name", "Source", "Target", "Symlink");
+
+  for (size_t i = 0; i < entries->len; i++) {
+    struct stat st;
+    int         is_link =
+        (lstat(entries->data[i].entry->str[2], &st) == 0) && S_ISLNK(st.st_mode);
+    printf("%-20s %-40s %-40s %s%-10s%s\n",
+           entries->data[i].entry->str[0],
+           entries->data[i].entry->str[1],
+           entries->data[i].entry->str[2],
+           is_link ? COLOR_GREEN : COLOR_RED,
+           is_link ? "yes" : "no",
+           COLOR_RESET);
+  }
+
+  return EXIT_SUCCESS;
+}
+
 int exec_cmd(cmd_t* cmd, entry_t* entries) {
   if (!cmd) {
     LOG_ERROR("cmd is NULL.");
@@ -197,7 +222,7 @@ int exec_cmd(cmd_t* cmd, entry_t* entries) {
     case CMD_DEL:
       return cmd_del(cmd, entries);
     case CMD_LIST:
-      return cmd_list(cmd, entries);
+      return cmd_list(entries);
     case CMD_EDIT:
       return cmd_edit(cmd, entries);
     case CMD_SYNC:
