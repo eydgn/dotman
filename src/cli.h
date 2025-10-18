@@ -24,16 +24,16 @@ typedef struct {
 int extract_action(cmd_t* cmd, const char* action);
 int copy_args(cmd_t* cmd, int argc, char* argv[]);
 
-int cmd_add(cmd_t* cmd);
-int cmd_del(cmd_t* cmd);
-int cmd_list(cmd_t* cmd);
-int cmd_edit(cmd_t* cmd);
-int cmd_sync(cmd_t* cmd);
-int cmd_init(cmd_t* cmd);
-int cmd_backup(cmd_t* cmd);
+int cmd_add(cmd_t* cmd, entry_t* entries);
+int cmd_del(cmd_t* cmd, entry_t* entries);
+int cmd_list(cmd_t* cmd, entry_t* entries);
+int cmd_edit(cmd_t* cmd, entry_t* entries);
+int cmd_sync(cmd_t* cmd, entry_t* entries);
+int cmd_init(cmd_t* cmd, entry_t* entries);
+int cmd_backup(cmd_t* cmd, entry_t* entries);
 int cmd_help(cmd_t* cmd);
 int cmd_version(cmd_t* cmd);
 int cmd_error(void);
 
-int exec_cmd(cmd_t* cmd);
+int exec_cmd(cmd_t* cmd, entry_t* entries);
 #endif  // !CLI_H

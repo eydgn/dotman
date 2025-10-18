@@ -78,6 +78,7 @@ int copy_args(cmd_t* cmd, int argc, char* argv[]) {
 }
 
 int exec_cmd(cmd_t* cmd) {
+int exec_cmd(cmd_t* cmd, entry_t* entries) {
   if (!cmd) {
     LOG_ERROR("cmd is NULL");
     return EXIT_FAILURE;
@@ -85,21 +86,21 @@ int exec_cmd(cmd_t* cmd) {
 
   switch (cmd->action) {
     case CMD_ADD:
-      return cmd_add(cmd);
+      return cmd_add(cmd, entries);
     case CMD_DEL:
-      return cmd_del(cmd);
+      return cmd_del(cmd, entries);
     case CMD_LIST:
-      return cmd_list(cmd);
+      return cmd_list(cmd, entries);
     case CMD_EDIT:
-      return cmd_edit(cmd);
+      return cmd_edit(cmd, entries);
     case CMD_SYNC:
-      return cmd_sync(cmd);
+      return cmd_sync(cmd, entries);
     case CMD_INIT:
-      return cmd_init(cmd);
+      return cmd_init(cmd, entries);
     case CMD_BACKUP:
-      return cmd_backup(cmd);
+      return cmd_backup(cmd, entries);
     case CMD_HELP:
-      return cmd_help(cmd);
+      return cmd_help(cmd );
     case CMD_VER:
       return cmd_version(cmd);
     case CMD_ERROR:
