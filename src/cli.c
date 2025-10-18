@@ -1,5 +1,6 @@
 #include "cli.h"
 
+#include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
@@ -134,6 +135,53 @@ int cmd_add(cmd_t* cmd, entry_t* entries) {
   svec_free(&tmp.entry);
   return EXIT_SUCCESS;
 }
+
+int cmd_del(cmd_t* cmd, entry_t* entries) {
+  // Destroy the link if exists
+  // remove from the entries
+  if (!cmd || cmd->args.len != 1 || !entries) {
+    LOG_ERROR("cmd or entries is NULL, or there are more or less than 1 arguments.");
+    return EXIT_FAILURE;
+  }
+
+  size_t i     = 0;
+  bool   found = 0;
+  for (; i < entries->data->entry->len; i++) {
+    if (strcmp(entries->data[i].entry->str[0], cmd->args.str[0]) == 0) {
+      found = 1;
+      break;
+    }
+  }
+
+  if (!found) {
+    LOG_ERROR("Given dotfile not found in the cfg.");
+    return EXIT_FAILURE;
+  }
+
+  struct stat st;
+  if (lstat(entries->data->entry->str[2], &st) == 0) {
+    if (S_ISLNK(st.st_mode)) {
+      if (unlink(entries->data[i].entry->str[2]) == 0) {
+        LOG_INFO("Symbolic link is destroyed.");
+      } else {
+        LOG_ERROR("Failed to destroy symbolic link.");
+        return EXIT_FAILURE;
+      }
+    } else {
+      LOG_WARN("There is no symbolic link.");
+    }
+  }
+
+  entry_ref_t tmp;
+  svec_new(&tmp.entry);
+  entry_del(entries, i, &tmp);
+  if (!tmp.entry) {
+    LOG_ERROR("Failed to delete entry");
+    return EXIT_FAILURE;
+  }
+
+  LOG_INFO("\"%s\" removed from config file.", tmp.entry->str[1]);
+  svec_free(&tmp.entry);
   return EXIT_SUCCESS;
 }
 
