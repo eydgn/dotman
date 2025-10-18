@@ -116,16 +116,24 @@ int cmd_add(cmd_t* cmd, entry_t* entries) {
 
   // push data
   entry_ref_t tmp;
+  svec_new(&tmp.entry);
   for (size_t i = 0; i < cmd->args.len; i++) {
     if (svec_push(tmp.entry, cmd->args.str[i])) {
       LOG_ERROR("Failed to add argument to entry vector.");
+      svec_free(&tmp.entry);
       return EXIT_FAILURE;
     }
   }
+
   if (entry_push(entries, tmp)) {
     LOG_ERROR("Failed to push to entries");
+    svec_free(&tmp.entry);
     return EXIT_FAILURE;
   }
+
+  svec_free(&tmp.entry);
+  return EXIT_SUCCESS;
+}
   return EXIT_SUCCESS;
 }
 
