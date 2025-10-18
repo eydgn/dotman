@@ -8,7 +8,7 @@
 
 int extract_action(cmd_t* cmd, const char* action) {
   if (!cmd || !action) {
-    LOG_ERROR("cmd or action is NULL");
+    LOG_ERROR("cmd or action is NULL.");
     return EXIT_FAILURE;
   }
 
@@ -63,13 +63,13 @@ int extract_action(cmd_t* cmd, const char* action) {
 
 int copy_args(cmd_t* cmd, int argc, char* argv[]) {
   if (!cmd || argc < 1 || !argv) {
-    LOG_ERROR("cmd or argv is NULL or argc is less then 1");
+    LOG_ERROR("cmd or argv is NULL, or argc is less than 1.");
     return EXIT_FAILURE;
   }
 
   for (int i = 0; i < argc; i++) {
     if (svec_push(&cmd->args, argv[i])) {
-      LOG_ERROR("sevc_push failed");
+      LOG_ERROR("Failed to add argument to vector.");
       return EXIT_FAILURE;
     }
   }
@@ -80,7 +80,7 @@ int copy_args(cmd_t* cmd, int argc, char* argv[]) {
 int exec_cmd(cmd_t* cmd) {
 int exec_cmd(cmd_t* cmd, entry_t* entries) {
   if (!cmd) {
-    LOG_ERROR("cmd is NULL");
+    LOG_ERROR("cmd is NULL.");
     return EXIT_FAILURE;
   }
 
@@ -106,7 +106,7 @@ int exec_cmd(cmd_t* cmd, entry_t* entries) {
     case CMD_ERROR:
       return cmd_error();
     default:
-      LOG_ERROR("Unexpected action type.");
+      LOG_ERROR("Unexpected command action type.");
       return EXIT_FAILURE;
   }
   return EXIT_SUCCESS;
