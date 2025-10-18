@@ -2,6 +2,8 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <sys/stat.h>
+#include <unistd.h>
 
 #include "core.h"
 #include "log.h"
@@ -77,7 +79,56 @@ int copy_args(cmd_t* cmd, int argc, char* argv[]) {
   return EXIT_SUCCESS;
 }
 
-int exec_cmd(cmd_t* cmd) {
+int cmd_add(cmd_t* cmd, entry_t* entries) {
+  if (!cmd || cmd->args.len < 3 || !entries) {
+    LOG_ERROR("cmd or entries is NULL, or there are fewer than 3 arguments.");
+    return EXIT_FAILURE;
+  }
+
+  // check source
+  if (access(cmd->args.str[1], F_OK)) {
+    LOG_ERROR("The source file or directory does not exist.");
+    return EXIT_FAILURE;
+  }
+  // check target
+  if (access(cmd->args.str[2], F_OK) == 0) {
+    LOG_ERROR("The target file or directory already exists.");
+    LOG_INFO("Please copy it to the dotfile home directory and try again.");
+    return EXIT_FAILURE;
+  }
+  // check if it's a symlink
+  struct stat st;
+  if (lstat(cmd->args.str[2], &st) == 0) {
+    if (S_ISLNK(st.st_mode)) {
+      LOG_ERROR("A symbolic link already exists at the target location.");
+      return EXIT_FAILURE;
+    }
+  }
+
+  // create the symlink
+  if (symlink(cmd->args.str[1], cmd->args.str[2]) == 0) {
+    LOG_INFO("Symbolic link created.\nFrom: %s\tTo: %s", cmd->args.str[1],
+             cmd->args.str[2]);
+  } else {
+    LOG_ERROR("Failed to create symbolic link.");
+    return EXIT_FAILURE;
+  }
+
+  // push data
+  entry_ref_t tmp;
+  for (size_t i = 0; i < cmd->args.len; i++) {
+    if (svec_push(tmp.entry, cmd->args.str[i])) {
+      LOG_ERROR("Failed to add argument to entry vector.");
+      return EXIT_FAILURE;
+    }
+  }
+  if (entry_push(entries, tmp)) {
+    LOG_ERROR("Failed to push to entries");
+    return EXIT_FAILURE;
+  }
+  return EXIT_SUCCESS;
+}
+
 int exec_cmd(cmd_t* cmd, entry_t* entries) {
   if (!cmd) {
     LOG_ERROR("cmd is NULL.");
@@ -100,7 +151,7 @@ int exec_cmd(cmd_t* cmd, entry_t* entries) {
     case CMD_BACKUP:
       return cmd_backup(cmd, entries);
     case CMD_HELP:
-      return cmd_help(cmd );
+      return cmd_help(cmd);
     case CMD_VER:
       return cmd_version(cmd);
     case CMD_ERROR:
