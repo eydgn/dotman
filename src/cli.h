@@ -28,6 +28,7 @@ int copy_args(cmd_t* cmd, int argc, char* argv[]);
 
 int         find_by_name(const char* name, entry_t* entries);
 static char getch(void);
+int         edit_save(char* name, char* source, char* target,  int index, entry_t* entries);
 
 int cmd_add(cmd_t* cmd, entry_t* entries);
 int cmd_del(cmd_t* cmd, entry_t* entries);

@@ -125,6 +125,27 @@ static char getch(void)
     return ch;
 }
 
+int edit_save(char* name, char* source, char* target, int index, entry_t* entries)
+{
+    if (svec_set(entries->data[index].entry, 0, name))
+    {
+        LOG_ERROR("Failed to save name.");
+        return EXIT_FAILURE;
+    }
+    if (svec_set(entries->data[index].entry, 1, source))
+    {
+        LOG_ERROR("Failed to save source.");
+        return EXIT_FAILURE;
+    }
+    if (svec_set(entries->data[index].entry, 2, target))
+    {
+        LOG_ERROR("Failed to save target.");
+        return EXIT_FAILURE;
+    }
+    printf("Changes saved!\n");
+    return EXIT_SUCCESS;
+}
+
 int cmd_add(cmd_t* cmd, entry_t* entries)
 {
     if (!cmd || cmd->args.len < 3 || !entries)
@@ -266,6 +287,96 @@ int cmd_list(entry_t* entries)
             is_link ? COLOR_GREEN : COLOR_RED,
             is_link ? "yes" : "no",
             COLOR_RESET);
+    }
+
+    return EXIT_SUCCESS;
+}
+
+int cmd_edit(cmd_t* cmd, entry_t* entries)
+{
+    int index = find_by_name(cmd->args.str[0], entries);
+    if (index == -1)
+    {
+        LOG_ERROR("Given dotfile not found in the cfg.");
+        return EXIT_FAILURE;
+    }
+
+    char name[128];
+    char source[128];
+    char target[128];
+
+    strncpy(name, entries->data[index].entry->str[0], sizeof(name));
+    strncpy(source, entries->data[index].entry->str[1], sizeof(source));
+    strncpy(target, entries->data[index].entry->str[2], sizeof(target));
+
+    bool running = true;
+    bool saved   = false;
+
+    while (running)
+    {
+        printf("Current Values\n");
+        printf("1. %s\n", name);
+        printf("2. %s\n", source);
+        printf("3. %s\n", target);
+        printf("Enter number to edit, w to save, q to discard: ");
+        char c = getch();
+
+        int ch;
+        while ((ch = getchar()) != '\n' && ch != EOF)
+        {
+            ;
+        }
+
+        if (c == '1')
+        {
+            printf("Enter new value for 1: ");
+            if (fgets(name, sizeof(name), stdin))
+            {
+                name[strcspn(name, "\n")] = 0;
+            }
+        }
+        else if (c == '2')
+        {
+            printf("Enter new value for 2: ");
+            if (fgets(source, sizeof(source), stdin))
+            {
+                source[strcspn(source, "\n")] = 0;
+            }
+        }
+        else if (c == '3')
+        {
+            printf("Enter new value for 3: ");
+            if (fgets(target, sizeof(target), stdin))
+            {
+                target[strcspn(target, "\n")] = 0;
+            }
+        }
+        else if (c == 'w')
+        {
+            saved   = true;
+            running = false;
+        }
+        else if (c == 'q')
+        {
+            running = false;
+        }
+        else
+        {
+            printf("Invalid input.\n");
+        }
+    }
+
+    if (saved)
+    {
+        if (edit_save(name, source, target, index, entries))
+        {
+            LOG_ERROR("Failed to save changes.");
+            return EXIT_FAILURE;
+        }
+    }
+    else
+    {
+        printf("Changes discarded.\n");
     }
 
     return EXIT_SUCCESS;
