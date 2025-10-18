@@ -6,14 +6,16 @@ dotfile manager
 
 - [x] Read from config file
 - [x] Write to config file
-- [ ] CMD:
-  - [ ] add: name target source
+- [/] CMD:
+  - [/] add: name target source
     - add a dotfile to the cfg and create the link.
-    - [ ] Check before creating a link
-  - [ ] del: name
+    - [X] Check before creating a link
+  - [/] del: name
     - deleted the dotfile from the cfg and destroy the link by the given name
-  - [ ] list:
+  - [/] list:
     - list all of the links. show if it's created, backuped etc.
+  - [ ] edit: name
+      - make it interactive
   - [ ] sync:
     - create the missing links
   - [ ] init:
