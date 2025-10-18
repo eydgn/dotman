@@ -96,6 +96,20 @@ int copy_args(cmd_t* cmd, int argc, char* argv[])
     return EXIT_SUCCESS;
 }
 
+int find_by_name(const char* name, entry_t* entries)
+{
+    int i = 0;
+    for (; (size_t) i < entries->data->entry->len; i++)
+    {
+        if (strcmp(entries->data[i].entry->str[0], name) == 0)
+        {
+            return i;
+            break;
+        }
+    }
+    return -1;
+}
+
 int cmd_add(cmd_t* cmd, entry_t* entries)
 {
     if (!cmd || cmd->args.len < 3 || !entries)
@@ -173,18 +187,8 @@ int cmd_del(cmd_t* cmd, entry_t* entries)
         return EXIT_FAILURE;
     }
 
-    size_t i     = 0;
-    bool   found = 0;
-    for (; i < entries->data->entry->len; i++)
-    {
-        if (strcmp(entries->data[i].entry->str[0], cmd->args.str[0]) == 0)
-        {
-            found = 1;
-            break;
-        }
-    }
-
-    if (!found)
+    int index = find_by_name(cmd->args.str[0], entries);
+    if (index == -1)
     {
         LOG_ERROR("Given dotfile not found in the cfg.");
         return EXIT_FAILURE;
@@ -195,7 +199,7 @@ int cmd_del(cmd_t* cmd, entry_t* entries)
     {
         if (S_ISLNK(st.st_mode))
         {
-            if (unlink(entries->data[i].entry->str[2]) == 0)
+            if (unlink(entries->data[index].entry->str[2]) == 0)
             {
                 LOG_INFO("Symbolic link is destroyed.");
             }
@@ -213,7 +217,7 @@ int cmd_del(cmd_t* cmd, entry_t* entries)
 
     entry_ref_t tmp;
     svec_new(&tmp.entry);
-    entry_del(entries, i, &tmp);
+    entry_del(entries, (size_t) index, &tmp);
     if (!tmp.entry)
     {
         LOG_ERROR("Failed to delete entry");
