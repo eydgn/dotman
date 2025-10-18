@@ -100,7 +100,7 @@ int copy_args(cmd_t* cmd, int argc, char* argv[])
 int find_by_name(const char* name, entry_t* entries)
 {
     int i = 0;
-    for (; (size_t) i < entries->data->entry->len; i++)
+    for (; (size_t) i < entries->len; i++)
     {
         if (strcmp(entries->data[i].entry->str[0], name) == 0)
         {
