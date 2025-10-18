@@ -3,22 +3,24 @@
 
 #include "core.h"
 
-typedef enum {
-  CMD_ADD,
-  CMD_DEL,
-  CMD_LIST,
-  CMD_EDIT,
-  CMD_SYNC,
-  CMD_INIT,
-  CMD_BACKUP,
-  CMD_HELP,
-  CMD_VER,
-  CMD_ERROR,
+typedef enum
+{
+    CMD_ADD,
+    CMD_DEL,
+    CMD_LIST,
+    CMD_EDIT,
+    CMD_SYNC,
+    CMD_INIT,
+    CMD_BACKUP,
+    CMD_HELP,
+    CMD_VER,
+    CMD_ERROR,
 } cli_action_t;
 
-typedef struct {
-  cli_action_t action;
-  svec_t       args;
+typedef struct
+{
+    cli_action_t action;
+    svec_t       args;
 } cmd_t;
 
 int extract_action(cmd_t* cmd, const char* action);

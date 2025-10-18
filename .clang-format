@@ -5,8 +5,10 @@ TabWidth: 4
 UseTab: Never
 IndentCaseLabels: true
 IndentCaseBlocks: true
-ColumnLimit: 90
-BreakBeforeBraces: Attach
+ColumnLimit: 100
+BreakBeforeBraces: Allman
+InsertBraces: true
+SeparateDefinitionBlocks: Always
 AllowShortBlocksOnASingleLine: Never
 AllowShortCaseLabelsOnASingleLine: false
 AllowShortFunctionsOnASingleLine: None
@@ -18,7 +20,7 @@ AlignOperands: Align
 PointerAlignment: Left
 DerivePointerAlignment: false
 SpaceAfterCStyleCast: true
-SpaceBeforeParens: ControlStatementsExceptControlMacros
+SpaceBeforeParens: ControlStatements
 SpaceBeforeAssignmentOperators: true
 SpaceInEmptyParentheses: false
 AlignConsecutiveAssignments:
@@ -35,12 +37,14 @@ AlignConsecutiveMacros:
   AcrossComments: false
 AlignArrayOfStructures: Left
 AlignEscapedNewlines: Left
+AlignTrailingComments: true
 SortIncludes: CaseSensitive
 IncludeBlocks: Regroup
 BinPackArguments: false
-BinPackParameters: true
+BinPackParameters: false
 AllowAllParametersOfDeclarationOnNextLine: false
-AlignAfterOpenBracket: Align
+AllowAllArgumentsOnNextLine: false
+AlignAfterOpenBracket: AlwaysBreak
 AlwaysBreakAfterReturnType: None
 MaxEmptyLinesToKeep: 1
 KeepEmptyLinesAtTheStartOfBlocks: false

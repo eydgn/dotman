@@ -7,8 +7,10 @@
 #define COLOR_RESET "\033[0m"
 
 SVEC_DEF
-typedef struct {
-  svec_t* entry;
+
+typedef struct
+{
+    svec_t* entry;
 } entry_ref_t;
 VEC_DEF(entry_ref_t, entry)
 

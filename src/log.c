@@ -19,28 +19,37 @@ static const char* level_names[] = {
 
 static const char* COLOR_RESET = "\033[0m";
 
-void log_message(log_level_t level, const char* file, const char* func, int line,
-                 const char* fmt, ...) {
-  int use_color = isatty(fileno(stderr));
+void log_message(
+    log_level_t level,
+    const char* file,
+    const char* func,
+    int         line,
+    const char* fmt,
+    ...)
+{
+    int use_color = isatty(fileno(stderr));
 
-  if (use_color) {
-    (void) fprintf(stderr, "%s[%s]%s ", level_colors[level], level_names[level],
-                   COLOR_RESET);
-  } else {
-    (void) fprintf(stderr, "[%s] ", level_names[level]);
-  }
+    if (use_color)
+    {
+        (void) fprintf(stderr, "%s[%s]%s ", level_colors[level], level_names[level], COLOR_RESET);
+    }
+    else
+    {
+        (void) fprintf(stderr, "[%s] ", level_names[level]);
+    }
 
-  if (level == LOG_ERROR) {
-    (void) fprintf(stderr, "%s:%s():%d -> ", file, func, line);
-  }
+    if (level == LOG_ERROR)
+    {
+        (void) fprintf(stderr, "%s:%s():%d -> ", file, func, line);
+    }
 
-  va_list args;
-  va_start(args, fmt);
-  char buffer[1024];
-  (void) vsnprintf(buffer, sizeof(buffer), fmt, args);
-  (void) fprintf(stderr, "%s", buffer);
-  va_end(args);
+    va_list args;
+    va_start(args, fmt);
+    char buffer[1024];
+    (void) vsnprintf(buffer, sizeof(buffer), fmt, args);
+    (void) fprintf(stderr, "%s", buffer);
+    va_end(args);
 
-  (void) fprintf(stderr, "\n");
-  (void) fflush(stderr);
+    (void) fprintf(stderr, "\n");
+    (void) fflush(stderr);
 }
