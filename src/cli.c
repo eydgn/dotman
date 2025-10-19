@@ -73,7 +73,7 @@ int copy_args(cmd_t* cmd, int argc, char* argv[]) {
     }
 
     for (int i = 0; i < argc; i++) {
-        if (svec_push(&cmd->args, argv[i])) {
+        if (svec_push(&cmd->args, argv[i]) == EXIT_FAILURE) {
             LOG_ERROR("Failed to add argument to vector.");
             return EXIT_FAILURE;
         }
@@ -91,14 +91,14 @@ int cmd_add(cmd_t* cmd, entry_t* entries) {
     entry_ref_t tmp;
     svec_new(&tmp.entry);
     for (size_t i = 0; i < cmd->args.len; i++) {
-        if (svec_push(tmp.entry, cmd->args.str[i])) {
+        if (svec_push(tmp.entry, cmd->args.str[i]) == EXIT_FAILURE) {
             LOG_ERROR("Failed to add argument to entry vector.");
             svec_free(&tmp.entry);
             return EXIT_FAILURE;
         }
     }
 
-    if (entry_push(entries, tmp)) {
+    if (entry_push(entries, tmp) == EXIT_FAILURE) {
         LOG_ERROR("Failed to push to entries");
         svec_free(&tmp.entry);
         return EXIT_FAILURE;
@@ -231,7 +231,7 @@ int cmd_edit(cmd_t* cmd, entry_t* entries) {
     }
 
     if (saved) {
-        if (edit_save(name, source, target, index, entries)) {
+        if (edit_save(name, source, target, index, entries) == EXIT_FAILURE) {
             LOG_ERROR("Failed to save changes.");
             return EXIT_FAILURE;
         }

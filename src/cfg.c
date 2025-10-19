@@ -15,10 +15,8 @@
  *
  */
 
-int parse_line(svec_t** entry, char* line)
-{
-    if (!entry || !line)
-    {
+int parse_line(svec_t** entry, char* line) {
+    if (!entry || !line) {
         LOG_ERROR("entries or line is NULL");
         return EXIT_FAILURE;
     }
@@ -29,17 +27,14 @@ int parse_line(svec_t** entry, char* line)
     char*  saveptr;
     char*  token = strtok_r(line, ",", &saveptr);
 
-    while (token != NULL)
-    {
-        if (*token == '\0')
-        {
+    while (token != NULL) {
+        if (*token == '\0') {
             LOG_ERROR("entry has empty fields");
             svec_free(entry);
             return EXIT_FAILURE;
         }
 
-        if (svec_push(*entry, token))
-        {
+        if (svec_push(*entry, token) == EXIT_FAILURE) {
             LOG_ERROR("svec_push failed");
             svec_free(entry);
             return EXIT_FAILURE;
@@ -49,8 +44,7 @@ int parse_line(svec_t** entry, char* line)
         field_c++;
     }
 
-    if (field_c != 3)
-    {
+    if (field_c != 3) {
         LOG_ERROR("entry has more or less than 3 fields");
         svec_free(entry);
         return EXIT_FAILURE;
@@ -58,33 +52,28 @@ int parse_line(svec_t** entry, char* line)
     return EXIT_SUCCESS;
 }
 
-int read_cfg(const char* filename, entry_t** entries)
-{
-    if (!filename || !entries)
-    {
+int read_cfg(const char* filename, entry_t** entries) {
+    if (!filename || !entries) {
         LOG_ERROR("filename or entries are NULL");
         return EXIT_FAILURE;
     }
 
     // open file
     FILE* file_ptr = fopen(filename, "rb");
-    if (!file_ptr)
-    {
+    if (!file_ptr) {
         LOG_ERROR("Failed to open file");
         return EXIT_FAILURE;
     }
 
     // get file size
-    if (fseek(file_ptr, 0, SEEK_END))
-    {
+    if (fseek(file_ptr, 0, SEEK_END) == EXIT_FAILURE) {
         LOG_ERROR("fseek failed");
         (void) fclose(file_ptr);
         return EXIT_FAILURE;
     }
 
     long file_size_long = ftell(file_ptr);
-    if (file_size_long < 0)
-    {
+    if (file_size_long < 0) {
         LOG_ERROR("ftell failed");
         (void) fclose(file_ptr);
         return EXIT_FAILURE;
@@ -92,8 +81,7 @@ int read_cfg(const char* filename, entry_t** entries)
 
     size_t file_size = (size_t) file_size_long;
 
-    if (fseek(file_ptr, 0, SEEK_SET))
-    {
+    if (fseek(file_ptr, 0, SEEK_SET) == EXIT_FAILURE) {
         LOG_ERROR("fseek failed");
         (void) fclose(file_ptr);
         return EXIT_FAILURE;
@@ -102,8 +90,7 @@ int read_cfg(const char* filename, entry_t** entries)
     // read file to buffer and close the file
     char* buffer = malloc(file_size + 1);
 
-    if (!buffer)
-    {
+    if (!buffer) {
         LOG_ERROR("Failed to allocate buffer");
         (void) fclose(file_ptr);
         return EXIT_FAILURE;
@@ -113,8 +100,7 @@ int read_cfg(const char* filename, entry_t** entries)
     buffer[read] = '\0';
     (void) fclose(file_ptr);
 
-    if (read != file_size)
-    {
+    if (read != file_size) {
         LOG_ERROR("Failed to read file");
         free(buffer);
         return EXIT_FAILURE;
@@ -123,13 +109,10 @@ int read_cfg(const char* filename, entry_t** entries)
     char* saveptr;
     char* token = strtok_r(buffer, "\n", &saveptr);
 
-    while (token != NULL)
-    {
-        if (*token != '\0')
-        {
+    while (token != NULL) {
+        if (*token != '\0') {
             svec_t* result;
-            if (parse_line(&result, token))
-            {
+            if (parse_line(&result, token) == EXIT_FAILURE) {
                 LOG_ERROR("Failed to parse line");
                 entry_free(entries);
                 free(buffer);
@@ -145,25 +128,19 @@ int read_cfg(const char* filename, entry_t** entries)
     return EXIT_SUCCESS;
 }
 
-int sort_by_names(entry_t* entries)
-{
-    if (!entries || entries->len == 0)
-    {
+int sort_by_names(entry_t* entries) {
+    if (!entries || entries->len == 0) {
         LOG_ERROR("entries is empty");
         return EXIT_FAILURE;
     }
 
-    for (size_t i = 0; i < entries->len; i++)
-    {
-        if (entries->data[i].entry->len != 3)
-        {
+    for (size_t i = 0; i < entries->len; i++) {
+        if (entries->data[i].entry->len != 3) {
             LOG_ERROR("entries has less or more than 3 fileds");
             return EXIT_FAILURE;
         }
-        for (size_t j = 0; j < entries->len - i - 1; j++)
-        {
-            if (strcmp(entries->data[j].entry->str[0], entries->data[j + 1].entry->str[0]) > 0)
-            {
+        for (size_t j = 0; j < entries->len - i - 1; j++) {
+            if (strcmp(entries->data[j].entry->str[0], entries->data[j + 1].entry->str[0]) > 0) {
                 entry_ref_t tmp      = entries->data[j];
                 entries->data[j]     = entries->data[j + 1];
                 entries->data[j + 1] = tmp;
@@ -174,37 +151,31 @@ int sort_by_names(entry_t* entries)
     return EXIT_SUCCESS;
 }
 
-int write_cfg(entry_t* entries, const char* filename)
-{
-    if (!filename || !entries)
-    {
+int write_cfg(entry_t* entries, const char* filename) {
+    if (!filename || !entries) {
         LOG_ERROR("filename or entries are NULL");
         return EXIT_FAILURE;
     }
 
-    if (sort_by_names(entries))
-    {
+    if (sort_by_names(entries) == EXIT_FAILURE) {
         LOG_ERROR("sort_by_names failed");
         return EXIT_FAILURE;
     }
 
     FILE* file_ptr = fopen(filename, "w");
-    if (!file_ptr)
-    {
+    if (!file_ptr) {
         LOG_ERROR("Failed to open file for writing");
         return EXIT_FAILURE;
     }
 
-    for (size_t i = 0; i < entries->len; i++)
-    {
+    for (size_t i = 0; i < entries->len; i++) {
         if (fprintf(
                 file_ptr,
                 "%s,%s,%s\n",
                 entries->data[i].entry->str[0],
                 entries->data[i].entry->str[1],
                 entries->data[i].entry->str[2])
-            < 0)
-        {
+            < 0) {
             LOG_ERROR("Failed to write file");
             (void) fclose(file_ptr);
             return EXIT_FAILURE;

@@ -38,15 +38,15 @@ char getch(void) {
 }
 
 int edit_save(char* name, char* source, char* target, int index, entry_t* entries) {
-    if (svec_set(entries->data[index].entry, 0, name)) {
+    if (svec_set(entries->data[index].entry, 0, name) == EXIT_FAILURE) {
         LOG_ERROR("Failed to save name.");
         return EXIT_FAILURE;
     }
-    if (svec_set(entries->data[index].entry, 1, source)) {
+    if (svec_set(entries->data[index].entry, 1, source) == EXIT_FAILURE) {
         LOG_ERROR("Failed to save source.");
         return EXIT_FAILURE;
     }
-    if (svec_set(entries->data[index].entry, 2, target)) {
+    if (svec_set(entries->data[index].entry, 2, target) == EXIT_FAILURE) {
         LOG_ERROR("Failed to save target.");
         return EXIT_FAILURE;
     }
