@@ -6,7 +6,7 @@ UseTab: Never
 IndentCaseLabels: true
 IndentCaseBlocks: true
 ColumnLimit: 100
-BreakBeforeBraces: Allman
+BreakBeforeBraces: Attach
 InsertBraces: true
 SeparateDefinitionBlocks: Always
 AllowShortBlocksOnASingleLine: Never

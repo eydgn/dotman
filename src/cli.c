@@ -1,5 +1,6 @@
 #include "cli.h"
 
+#include <ctype.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -11,64 +12,53 @@
 #include "core.h"
 #include "log.h"
 
-int extract_action(cmd_t* cmd, const char* action)
-{
-    if (!cmd || !action)
-    {
+int extract_action(cmd_t* cmd, const char* action) {
+    if (!cmd || !action) {
         LOG_ERROR("cmd or action is NULL.");
         return EXIT_FAILURE;
     }
 
-    if (!(strcmp("add", action)))
-    {
+    if (!(strcmp("add", action))) {
         cmd->action = CMD_ADD;
         return EXIT_SUCCESS;
     }
 
-    if (!(strcmp("del", action)))
-    {
+    if (!(strcmp("del", action))) {
         cmd->action = CMD_DEL;
         return EXIT_SUCCESS;
     }
 
-    if (!(strcmp("list", action)))
-    {
+    if (!(strcmp("list", action))) {
         cmd->action = CMD_LIST;
         return EXIT_SUCCESS;
     }
 
-    if (!(strcmp("edit", action)))
-    {
+    if (!(strcmp("edit", action))) {
         cmd->action = CMD_EDIT;
         return EXIT_SUCCESS;
     }
 
-    if (!(strcmp("sync", action)))
-    {
+    if (!(strcmp("sync", action))) {
         cmd->action = CMD_SYNC;
         return EXIT_SUCCESS;
     }
 
-    if (!(strcmp("init", action)))
-    {
+    if (!(strcmp("init", action))) {
         cmd->action = CMD_INIT;
         return EXIT_SUCCESS;
     }
 
-    if (!(strcmp("backup", action)))
-    {
+    if (!(strcmp("backup", action))) {
         cmd->action = CMD_BACKUP;
         return EXIT_SUCCESS;
     }
 
-    if (!(strcmp("help", action)))
-    {
+    if (!(strcmp("help", action))) {
         cmd->action = CMD_HELP;
         return EXIT_SUCCESS;
     }
 
-    if (!(strcmp("ver", action)))
-    {
+    if (!(strcmp("ver", action))) {
         cmd->action = CMD_VER;
         return EXIT_SUCCESS;
     }
@@ -77,18 +67,14 @@ int extract_action(cmd_t* cmd, const char* action)
     return EXIT_SUCCESS;
 }
 
-int copy_args(cmd_t* cmd, int argc, char* argv[])
-{
-    if (!cmd || argc < 1 || !argv)
-    {
+int copy_args(cmd_t* cmd, int argc, char* argv[]) {
+    if (!cmd || argc < 1 || !argv) {
         LOG_ERROR("cmd or argv is NULL, or argc is less than 1.");
         return EXIT_FAILURE;
     }
 
-    for (int i = 0; i < argc; i++)
-    {
-        if (svec_push(&cmd->args, argv[i]))
-        {
+    for (int i = 0; i < argc; i++) {
+        if (svec_push(&cmd->args, argv[i])) {
             LOG_ERROR("Failed to add argument to vector.");
             return EXIT_FAILURE;
         }
@@ -97,13 +83,10 @@ int copy_args(cmd_t* cmd, int argc, char* argv[])
     return EXIT_SUCCESS;
 }
 
-int find_by_name(const char* name, entry_t* entries)
-{
+int find_by_name(const char* name, entry_t* entries) {
     int i = 0;
-    for (; (size_t) i < entries->len; i++)
-    {
-        if (strcmp(entries->data[i].entry->str[0], name) == 0)
-        {
+    for (; (size_t) i < entries->len; i++) {
+        if (strcmp(entries->data[i].entry->str[0], name) == 0) {
             return i;
             break;
         }
@@ -111,8 +94,7 @@ int find_by_name(const char* name, entry_t* entries)
     return -1;
 }
 
-static char getch(void)
-{
+static char getch(void) {
     struct termios oldt;
     struct termios newt;
     char           ch;
@@ -125,20 +107,16 @@ static char getch(void)
     return ch;
 }
 
-int edit_save(char* name, char* source, char* target, int index, entry_t* entries)
-{
-    if (svec_set(entries->data[index].entry, 0, name))
-    {
+int edit_save(char* name, char* source, char* target, int index, entry_t* entries) {
+    if (svec_set(entries->data[index].entry, 0, name)) {
         LOG_ERROR("Failed to save name.");
         return EXIT_FAILURE;
     }
-    if (svec_set(entries->data[index].entry, 1, source))
-    {
+    if (svec_set(entries->data[index].entry, 1, source)) {
         LOG_ERROR("Failed to save source.");
         return EXIT_FAILURE;
     }
-    if (svec_set(entries->data[index].entry, 2, target))
-    {
+    if (svec_set(entries->data[index].entry, 2, target)) {
         LOG_ERROR("Failed to save target.");
         return EXIT_FAILURE;
     }
@@ -301,40 +279,30 @@ int cmd_add(cmd_t* cmd, entry_t* entries) {
     return EXIT_SUCCESS;
 }
 
-int cmd_del(cmd_t* cmd, entry_t* entries)
-{
+int cmd_del(cmd_t* cmd, entry_t* entries) {
     // Destroy the link if exists
     // remove from the entries
-    if (!cmd || cmd->args.len != 1 || !entries)
-    {
+    if (!cmd || cmd->args.len != 1 || !entries) {
         LOG_ERROR("cmd or entries is NULL, or there are more or less than 1 arguments.");
         return EXIT_FAILURE;
     }
 
     int index = find_by_name(cmd->args.str[0], entries);
-    if (index == -1)
-    {
+    if (index == -1) {
         LOG_ERROR("Given dotfile not found in the cfg.");
         return EXIT_FAILURE;
     }
 
     struct stat st;
-    if (lstat(entries->data->entry->str[2], &st) == 0)
-    {
-        if (S_ISLNK(st.st_mode))
-        {
-            if (unlink(entries->data[index].entry->str[2]) == 0)
-            {
+    if (lstat(entries->data->entry->str[2], &st) == 0) {
+        if (S_ISLNK(st.st_mode)) {
+            if (unlink(entries->data[index].entry->str[2]) == 0) {
                 LOG_INFO("Symbolic link is destroyed.");
-            }
-            else
-            {
+            } else {
                 LOG_ERROR("Failed to destroy symbolic link.");
                 return EXIT_FAILURE;
             }
-        }
-        else
-        {
+        } else {
             LOG_WARN("There is no symbolic link.");
         }
     }
@@ -342,8 +310,7 @@ int cmd_del(cmd_t* cmd, entry_t* entries)
     entry_ref_t tmp;
     svec_new(&tmp.entry);
     entry_del(entries, (size_t) index, &tmp);
-    if (!tmp.entry)
-    {
+    if (!tmp.entry) {
         LOG_ERROR("Failed to delete entry");
         return EXIT_FAILURE;
     }
@@ -353,18 +320,15 @@ int cmd_del(cmd_t* cmd, entry_t* entries)
     return EXIT_SUCCESS;
 }
 
-int cmd_list(entry_t* entries)
-{
-    if (!entries)
-    {
+int cmd_list(entry_t* entries) {
+    if (!entries) {
         LOG_ERROR("entries is NULL.");
         return EXIT_FAILURE;
     }
 
     printf("%-20s %-40s %-40s %-10s\n", "Name", "Source", "Target", "Symlink");
 
-    for (size_t i = 0; i < entries->len; i++)
-    {
+    for (size_t i = 0; i < entries->len; i++) {
         struct stat st;
         int is_link = (lstat(entries->data[i].entry->str[2], &st) == 0) && S_ISLNK(st.st_mode);
         printf(
@@ -380,11 +344,9 @@ int cmd_list(entry_t* entries)
     return EXIT_SUCCESS;
 }
 
-int cmd_edit(cmd_t* cmd, entry_t* entries)
-{
+int cmd_edit(cmd_t* cmd, entry_t* entries) {
     int index = find_by_name(cmd->args.str[0], entries);
-    if (index == -1)
-    {
+    if (index == -1) {
         LOG_ERROR("Given dotfile not found in the cfg.");
         return EXIT_FAILURE;
     }
@@ -400,8 +362,7 @@ int cmd_edit(cmd_t* cmd, entry_t* entries)
     bool running = true;
     bool saved   = false;
 
-    while (running)
-    {
+    while (running) {
         printf("Current Values\n");
         printf("1. %s\n", name);
         printf("2. %s\n", source);
@@ -410,76 +371,54 @@ int cmd_edit(cmd_t* cmd, entry_t* entries)
         char c = getch();
 
         int ch;
-        while ((ch = getchar()) != '\n' && ch != EOF)
-        {
+        while ((ch = getchar()) != '\n' && ch != EOF) {
             ;
         }
 
-        if (c == '1')
-        {
+        if (c == '1') {
             printf("Enter new value for 1: ");
-            if (fgets(name, sizeof(name), stdin))
-            {
+            if (fgets(name, sizeof(name), stdin)) {
                 name[strcspn(name, "\n")] = 0;
             }
-        }
-        else if (c == '2')
-        {
+        } else if (c == '2') {
             printf("Enter new value for 2: ");
-            if (fgets(source, sizeof(source), stdin))
-            {
+            if (fgets(source, sizeof(source), stdin)) {
                 source[strcspn(source, "\n")] = 0;
             }
-        }
-        else if (c == '3')
-        {
+        } else if (c == '3') {
             printf("Enter new value for 3: ");
-            if (fgets(target, sizeof(target), stdin))
-            {
+            if (fgets(target, sizeof(target), stdin)) {
                 target[strcspn(target, "\n")] = 0;
             }
-        }
-        else if (c == 'w')
-        {
+        } else if (c == 'w') {
             saved   = true;
             running = false;
-        }
-        else if (c == 'q')
-        {
+        } else if (c == 'q') {
             running = false;
-        }
-        else
-        {
+        } else {
             printf("Invalid input.\n");
         }
     }
 
-    if (saved)
-    {
-        if (edit_save(name, source, target, index, entries))
-        {
+    if (saved) {
+        if (edit_save(name, source, target, index, entries)) {
             LOG_ERROR("Failed to save changes.");
             return EXIT_FAILURE;
         }
-    }
-    else
-    {
+    } else {
         printf("Changes discarded.\n");
     }
 
     return EXIT_SUCCESS;
 }
 
-int exec_cmd(cmd_t* cmd, entry_t* entries)
-{
-    if (!cmd)
-    {
+int exec_cmd(cmd_t* cmd, entry_t* entries) {
+    if (!cmd) {
         LOG_ERROR("cmd is NULL.");
         return EXIT_FAILURE;
     }
 
-    switch (cmd->action)
-    {
+    switch (cmd->action) {
         case CMD_ADD:
             return cmd_add(cmd, entries);
         case CMD_DEL:
