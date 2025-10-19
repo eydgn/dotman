@@ -24,7 +24,7 @@ int find_by_name(const char* name, entry_t* entries) {
     return -1;
 }
 
-static char getch(void) {
+char getch(void) {
     struct termios oldt;
     struct termios newt;
     char           ch;
