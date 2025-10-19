@@ -197,7 +197,7 @@ int cmd_edit(cmd_t* cmd, entry_t* entries) {
         printf("1. %s\n", name);
         printf("2. %s\n", source);
         printf("3. %s\n", target);
-        printf("Enter number to edit, w to save, q to discard: ");
+        printf("Enter number to edit, w to save, q to discard\n");
         char c = getch();
 
         int ch;
@@ -235,6 +235,7 @@ int cmd_edit(cmd_t* cmd, entry_t* entries) {
             LOG_ERROR("Failed to save changes.");
             return EXIT_FAILURE;
         }
+        LOG_INFO("Run sync command to create links.");
     } else {
         printf("Changes discarded.\n");
     }
