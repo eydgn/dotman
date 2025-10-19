@@ -1,5 +1,4 @@
 # clangd
-# CompileFlags:
 
 Diagnostics:
   UnusedIncludes: Strict
@@ -19,11 +18,11 @@ Diagnostics:
       - readability-identifier-length
       - readability-magic-numbers
 
-# InlayHints:
-#   Enabled: true
-#   ParameterNames: true
-#   DeducedTypes: true
-#   Designators: true
+InlayHints:
+  Enabled: true
+  ParameterNames: true
+  DeducedTypes: true
+  Designators: true
 
 Hover:
   ShowAKA: true
