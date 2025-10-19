@@ -99,7 +99,6 @@ char* expand_home(const char* path) {
         return NULL;
     }
 
-    free(full_path);
     return full_path;
 }
 
