@@ -243,6 +243,30 @@ int cmd_edit(cmd_t* cmd, entry_t* entries) {
     return EXIT_SUCCESS;
 }
 
+int cmd_sync(cmd_t* cmd, entry_t* entries) {
+    /* try to link every entry */
+    if (!cmd || !entries) {
+        LOG_ERROR("cmd or entries is NULL");
+        return EXIT_FAILURE;
+    }
+
+    bool failed = false;
+
+    for (size_t i = 0; i < entries->len; i++) {
+        if (check_link(entries->data[i].entry->str[1], entries->data[i].entry->str[2])
+            == EXIT_FAILURE) {
+            failed = true;
+        }
+    }
+
+    if (failed) {
+        LOG_ERROR("Sync completed with errors!");
+        return EXIT_FAILURE;
+    }
+    LOG_INFO("Sync completed.");
+    return EXIT_SUCCESS;
+}
+
 int exec_cmd(cmd_t* cmd, entry_t* entries) {
     if (!cmd) {
         LOG_ERROR("cmd is NULL.");
