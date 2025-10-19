@@ -5,8 +5,7 @@
 #include "cfg.h"
 #include "core.h"
 
-int main(void)
-{
+int main(void) {
     entry_t* entries;
     entry_new(&entries);
 
@@ -15,13 +14,11 @@ int main(void)
 
     printf("\nAfter sorting:\n");
 
-    for (size_t i = 0; i < entries->len; i++)
-    {
+    for (size_t i = 0; i < entries->len; i++) {
         printf("%s\n", *entries->data[i].entry->str);
     }
 
-    for (size_t i = 0; i < entries->len; i++)
-    {
+    for (size_t i = 0; i < entries->len; i++) {
         svec_free(&entries->data[i].entry);
     }
 

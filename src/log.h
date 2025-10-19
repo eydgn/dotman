@@ -1,8 +1,7 @@
 #ifndef LOG_H
 #define LOG_H
 
-typedef enum
-{
+typedef enum {
     LOG_ERROR,
     LOG_WARN,
     LOG_INFO

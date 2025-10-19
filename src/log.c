@@ -25,21 +25,16 @@ void log_message(
     const char* func,
     int         line,
     const char* fmt,
-    ...)
-{
+    ...) {
     int use_color = isatty(fileno(stderr));
 
-    if (use_color)
-    {
+    if (use_color) {
         (void) fprintf(stderr, "%s[%s]%s ", level_colors[level], level_names[level], COLOR_RESET);
-    }
-    else
-    {
+    } else {
         (void) fprintf(stderr, "[%s] ", level_names[level]);
     }
 
-    if (level == LOG_ERROR)
-    {
+    if (level == LOG_ERROR) {
         (void) fprintf(stderr, "%s:%s():%d -> ", file, func, line);
     }
 

@@ -8,8 +8,7 @@
 
 SVEC_DEF
 
-typedef struct
-{
+typedef struct {
     svec_t* entry;
 } entry_ref_t;
 VEC_DEF(entry_ref_t, entry)
