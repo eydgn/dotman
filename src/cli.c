@@ -273,29 +273,30 @@ int check_link(const char* source, const char* target) {
     free(trg);
     return EXIT_FAILURE;
 }
+
+int cmd_add(cmd_t* cmd, entry_t* entries) {
+    if (!cmd || cmd->args.len < 3 || !entries) {
+        LOG_ERROR("cmd or entries is NULL, or there are fewer than 3 arguments.");
         return EXIT_FAILURE;
     }
 
-    // push data
     entry_ref_t tmp;
     svec_new(&tmp.entry);
-    for (size_t i = 0; i < cmd->args.len; i++)
-    {
-        if (svec_push(tmp.entry, cmd->args.str[i]))
-        {
+    for (size_t i = 0; i < cmd->args.len; i++) {
+        if (svec_push(tmp.entry, cmd->args.str[i])) {
             LOG_ERROR("Failed to add argument to entry vector.");
             svec_free(&tmp.entry);
             return EXIT_FAILURE;
         }
     }
 
-    if (entry_push(entries, tmp))
-    {
+    if (entry_push(entries, tmp)) {
         LOG_ERROR("Failed to push to entries");
         svec_free(&tmp.entry);
         return EXIT_FAILURE;
     }
 
+    LOG_INFO("entry is added to config file.");
     svec_free(&tmp.entry);
     return EXIT_SUCCESS;
 }
