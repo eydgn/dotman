@@ -267,6 +267,48 @@ int cmd_sync(cmd_t* cmd, entry_t* entries) {
     return EXIT_SUCCESS;
 }
 
+int cmd_init(cmd_t* cmd, entry_t* entries) {
+    (void) cmd;
+    (void) entries;
+    LOG_INFO("init: placeholder (no operation)");
+    return EXIT_SUCCESS;
+}
+
+int cmd_backup(cmd_t* cmd, entry_t* entries) {
+    (void) cmd;
+    (void) entries;
+    LOG_INFO("backup: placeholder (no operation)");
+    return EXIT_SUCCESS;
+}
+
+int cmd_help(cmd_t* cmd) {
+    (void) cmd;
+    printf("Usage: dotman <command> [args]\n");
+    printf("\n");
+    printf("Commands:\n");
+    printf("  add <name> <source> <target>   Add a dotfile entry\n");
+    printf("  del <name>                     Delete an entry and remove symlink\n");
+    printf("  list                           List entries\n");
+    printf("  edit <name>                    Edit an entry interactively\n");
+    printf("  sync                           Create symlinks according to config\n");
+    printf("  init                           Initialize config\n");
+    printf("  backup                         Backup dotfiles\n");
+    printf("  help                           Show this help\n");
+    printf("  ver                            Show version\n");
+    return EXIT_SUCCESS;
+}
+
+int cmd_version(cmd_t* cmd) {
+    (void) cmd;
+    printf("dotman 0.1.0\n");
+    return EXIT_SUCCESS;
+}
+
+int cmd_error(void) {
+    LOG_ERROR("Invalid command.");
+    return EXIT_FAILURE;
+}
+
 int exec_cmd(cmd_t* cmd, entry_t* entries) {
     if (!cmd) {
         LOG_ERROR("cmd is NULL.");
